@@ -108,6 +108,17 @@
         .portal-card i { font-size: 2.3rem; color: var(--primary); }
         .portal-card h3 { font-size: 0.95rem; color: white; font-weight: 700; }
 
+        /* Unified Portal Styles */
+        .portal-tabs {
+            display: flex; gap: 6px; background: rgba(0, 0, 0, 0.3); padding: 6px; border-radius: 14px; margin-bottom: 20px; border: 1px solid var(--card-border);
+        }
+        .portal-tab-btn {
+            flex: 1; padding: 10px 5px; border: none; background: transparent; color: var(--text-muted); font-size: 0.78rem; font-weight: 700;
+            border-radius: 10px; cursor: pointer; transition: all 0.25s ease; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;
+        }
+        .portal-tab-btn i { font-size: 1.1rem; }
+        .portal-tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4); }
+
         .collapsible-card {
             background: var(--card-bg); backdrop-filter: blur(16px);
             border: 1px solid var(--card-border); border-radius: 20px;
@@ -268,7 +279,7 @@
         <div class="sidebar-menu">
             <div class="sidebar-menu-title">الرئيسية</div>
             <button class="nav-item active" onclick="switchUserRole('selector')">
-                <i class="fa-solid fa-house"></i> تغيير نوع المستخدم
+                <i class="fa-solid fa-house"></i> شاشة الدخول الموحدة
             </button>
 
             <div class="sidebar-menu-title" id="roleSectionTitle">الخدمات المتاحة</div>
@@ -297,31 +308,64 @@
 
     <div class="container">
 
-        <!-- VIEW SELECTOR -->
+        <!-- VIEW SELECTOR / UNIFIED PROFESSIONAL PORTAL LOGIN PAGE -->
         <div id="portalSelectorTab" class="view active">
             <div class="glass-card" style="text-align: center;">
-                <i class="fa-solid fa-school" style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;"></i>
-                <h2 style="font-size: 1.3rem; margin-bottom: 5px;">مرحباً بك في منظومة مسار التعليمية</h2>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">يرجى تحديد الصفة للدخول للواجهة المخصصة للسنتر:</p>
-
-                <div class="portal-grid">
-                    <div class="portal-card" onclick="switchUserRole('student')">
-                        <i class="fa-solid fa-id-card-clip"></i>
-                        <h3>بوابة الطالب</h3>
-                    </div>
-                    <div class="portal-card" onclick="switchUserRole('parent')">
-                        <i class="fa-solid fa-user-check" style="color: var(--success);"></i>
-                        <h3>ولي الأمر</h3>
-                    </div>
-                    <div class="portal-card" onclick="switchUserRole('driver')">
-                        <i class="fa-solid fa-door-open" style="color: var(--warning);"></i>
-                        <h3>مشرف القاعة / الماسح</h3>
-                    </div>
-                    <div class="portal-card" onclick="switchUserRole('admin')">
-                        <i class="fa-solid fa-user-gear" style="color: #8b5cf6;"></i>
-                        <h3>الإدارة والمالية</h3>
-                    </div>
+                <div style="margin-bottom: 15px;">
+                    <i class="fa-solid fa-school" style="font-size: 2.8rem; color: var(--primary);"></i>
+                    <h2 style="font-size: 1.25rem; margin-top: 8px;">مرحباً بك في منظومة مسار التعليمية</h2>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">بوابة الدخول الذكية للخدمات التعليمية والقاعات</p>
                 </div>
+
+                <!-- Interactive Tabs Bar -->
+                <div class="portal-tabs">
+                    <button id="tabBtnStudent" class="portal-tab-btn active" onclick="selectPortalTab('student')">
+                        <i class="fa-solid fa-id-card-clip"></i> الطالب
+                    </button>
+                    <button id="tabBtnParent" class="portal-tab-btn" onclick="selectPortalTab('parent')">
+                        <i class="fa-solid fa-user-check" style="color: var(--success);"></i> ولي الأمر
+                    </button>
+                    <button id="tabBtnDriver" class="portal-tab-btn" onclick="selectPortalTab('driver')">
+                        <i class="fa-solid fa-door-open" style="color: var(--warning);"></i> المشرف
+                    </button>
+                    <button id="tabBtnAdmin" class="portal-tab-btn" onclick="selectPortalTab('admin')">
+                        <i class="fa-solid fa-user-gear" style="color: #8b5cf6;"></i> الإدارة
+                    </button>
+                </div>
+
+                <!-- PORTAL SECTION: STUDENT -->
+                <div id="portalSectionStudent" class="portal-form-section">
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">أدخل كود الطالب لعرض كارت الحضور الذكي:</p>
+                    <input type="text" id="selectorStudentId" class="input-box" placeholder="أدخل كود الطالب (مثال: STD-1001)" style="text-align: center; margin-bottom: 12px;">
+                    <button class="btn-submit" onclick="submitPortalStudent()">
+                        <i class="fa-solid fa-qrcode"></i> عرض كارت الحضور الذكي
+                    </button>
+                </div>
+
+                <!-- PORTAL SECTION: PARENT -->
+                <div id="portalSectionParent" class="portal-form-section" style="display: none;">
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">متابعة حضور الطالب والمالية بشكل مباشر:</p>
+                    <button class="btn-submit" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="switchUserRole('parent')">
+                        <i class="fa-solid fa-right-to-bracket"></i> دخول / إنشاء حساب ولي الأمر
+                    </button>
+                </div>
+
+                <!-- PORTAL SECTION: DRIVER / ASSISTANT -->
+                <div id="portalSectionDriver" class="portal-form-section" style="display: none;">
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">دخول مشرف القاعة / المساعد لماسح الحضور:</p>
+                    <button class="btn-submit" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="switchUserRole('driver')">
+                        <i class="fa-solid fa-barcode"></i> الدخول لماسح القاعات والمساعدين
+                    </button>
+                </div>
+
+                <!-- PORTAL SECTION: ADMIN -->
+                <div id="portalSectionAdmin" class="portal-form-section" style="display: none;">
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">دخول لوحة التحكم والإدارة والمالية:</p>
+                    <button class="btn-submit" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);" onclick="switchUserRole('admin')">
+                        <i class="fa-solid fa-user-shield"></i> الدخول للوحة الإدارة والمالية
+                    </button>
+                </div>
+
             </div>
         </div>
 
@@ -448,15 +492,45 @@
             </div>
         </div>
 
-        <!-- VIEW 2: SCANNER (HALL INSPECTOR) -->
+        <!-- VIEW 2: SCANNER (HALL INSPECTOR / ASSISTANT) -->
         <div id="scanTab" class="view">
             <div id="driverAuthCardScan" class="glass-card" style="text-align: center;">
                 <i class="fa-solid fa-door-open" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 10px;"></i>
-                <h3 style="margin-bottom: 15px;">دخول مشرف القاعات للماسح الضوئي</h3>
+                <h3 style="margin-bottom: 10px;">دخول مشرف القاعة / المساعد</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">أدخل رقم القاعة وكلمة المرور للدخول وتفعيل الكاميرا والماسح</p>
+
                 <input type="text" id="busNumberInputScan" class="input-box" placeholder="رقم القاعة / المجموعة (مثال: قاعة 1 / ثانوية)" style="text-align: center; margin-bottom: 10px;">
-                <input type="password" id="driverPassScan" class="input-box" placeholder="كلمة مرور المشرف" style="text-align: center; margin-bottom: 15px;">
-                <button class="btn-submit" onclick="authenticateDriver()">تأكيد الدخول للماسح</button>
-                <button class="btn-submit" style="background: rgba(255,255,255,0.08); margin-top: 10px;" onclick="switchUserRole('selector')">العودة للشاشة الرئيسية</button>
+                <input type="password" id="driverPassScan" class="input-box" placeholder="كلمة مرور المشرف / المساعد" style="text-align: center; margin-bottom: 10px;">
+                <input type="password" id="driverPassConfirmScan" class="input-box" placeholder="تأكيد كلمة المرور (عند التفعيل أول مرة)" style="text-align: center; margin-bottom: 12px;">
+
+                <button class="btn-submit" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="authenticateDriver()">
+                    <i class="fa-solid fa-lock"></i> تأكيد الدخول / تفعيل كلمة السر
+                </button>
+
+                <div style="margin-top: 12px;">
+                    <a href="javascript:void(0)" onclick="toggleDriverForgotPass(true)" style="color: var(--warning); font-size: 0.85rem; text-decoration: none; font-weight: bold;">
+                        <i class="fa-solid fa-key"></i> هل نسيت كلمة المرور؟
+                    </a>
+                </div>
+
+                <button class="btn-submit" style="background: rgba(255,255,255,0.08); margin-top: 15px;" onclick="switchUserRole('selector')">العودة للشاشة الرئيسية</button>
+            </div>
+
+            <!-- FORGOT DRIVER PASSWORD CARD -->
+            <div id="driverForgotCard" class="glass-card" style="display: none; text-align: center;">
+                <i class="fa-solid fa-unlock-keyhole" style="font-size: 2.8rem; color: var(--warning); margin-bottom: 10px;"></i>
+                <h3 style="margin-bottom: 10px; color: var(--warning);">استعادة كلمة سر المشرف / المساعد</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">يتطلب إعادة تعيين كلمة السر تأكيد البريد الإلكتروني الخاص بالإدارة لضمان الأمان</p>
+
+                <input type="email" id="resetDriverAdminEmail" class="input-box" placeholder="بريد الأدمن لتأكيد الصلاحية" style="text-align: center; margin-bottom: 10px;">
+                <input type="password" id="resetDriverNewPass" class="input-box" placeholder="كلمة السر الجديدة للمشرفين" style="text-align: center; margin-bottom: 15px;">
+
+                <button class="btn-submit" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="resetDriverPassword()">
+                    <i class="fa-solid fa-arrows-rotate"></i> إعادة تعيين كلمة السر
+                </button>
+                <button class="btn-submit" style="background: rgba(255,255,255,0.08); margin-top: 10px;" onclick="toggleDriverForgotPass(false)">
+                    إلغاء والعودة لصفحة الدخول
+                </button>
             </div>
 
             <div id="driverScanContent" style="display: none;">
@@ -916,6 +990,34 @@
         let lastScannedStudentId = "";
         let lastScanTimestamp = 0;
 
+        /* Portal Navigation Functions */
+        function selectPortalTab(tabName) {
+            document.querySelectorAll('.portal-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.portal-form-section').forEach(s => s.style.display = 'none');
+
+            if (tabName === 'student') {
+                document.getElementById('tabBtnStudent').classList.add('active');
+                document.getElementById('portalSectionStudent').style.display = 'block';
+            } else if (tabName === 'parent') {
+                document.getElementById('tabBtnParent').classList.add('active');
+                document.getElementById('portalSectionParent').style.display = 'block';
+            } else if (tabName === 'driver') {
+                document.getElementById('tabBtnDriver').classList.add('active');
+                document.getElementById('portalSectionDriver').style.display = 'block';
+            } else if (tabName === 'admin') {
+                document.getElementById('tabBtnAdmin').classList.add('active');
+                document.getElementById('portalSectionAdmin').style.display = 'block';
+            }
+        }
+
+        function submitPortalStudent() {
+            const code = document.getElementById('selectorStudentId').value.trim();
+            if(!code) return showCustomAlert("تنبيه", "يرجى إدخال كود الطالب!", "warning");
+            document.getElementById('studentLoginId').value = code;
+            switchUserRole('student');
+            loginStudentPortal();
+        }
+
         function updateAdminReportDate() {
             const selected = document.getElementById('adminReportDate').value;
             if(selected) {
@@ -948,7 +1050,7 @@
 
             if (role === 'selector') {
                 document.getElementById('portalSelectorTab').classList.add('active');
-                document.getElementById('currentPageTitle').innerText = 'اختيار الواجهة';
+                document.getElementById('currentPageTitle').innerText = 'شاشة الدخول الموحدة';
             } else if (role === 'student') {
                 document.getElementById('studentTab').classList.add('active');
                 document.getElementById('currentPageTitle').innerText = 'كارت الطالب الذكي';
@@ -957,7 +1059,7 @@
                 document.getElementById('currentPageTitle').innerText = 'متابعة ولي الأمر';
             } else if (role === 'driver') {
                 document.getElementById('scanTab').classList.add('active');
-                document.getElementById('currentPageTitle').innerText = 'ماسح مشرف القاعة';
+                document.getElementById('currentPageTitle').innerText = 'ماسح مشرف القاعة / المساعد';
             } else if (role === 'admin') {
                 sidebarToggleBtn.style.display = 'flex';
                 document.getElementById('adminTab').classList.add('active');
@@ -1111,7 +1213,8 @@
         async function authenticateDriver() {
             const busNum = document.getElementById('busNumberInputScan').value.trim();
             const pass = document.getElementById('driverPassScan').value.trim();
-            await checkDriverLogin(busNum, pass);
+            const confirmPass = document.getElementById('driverPassConfirmScan').value.trim();
+            await checkDriverLogin(busNum, pass, confirmPass);
         }
 
         async function authenticateDriverLogs() {
@@ -1120,32 +1223,94 @@
             await checkDriverLogin(busNum, pass);
         }
 
-        async function checkDriverLogin(busNum, inputPass) {
+        /* Enhanced Driver / Assistant Authentication & Password Management */
+        async function checkDriverLogin(busNum, inputPass, confirmPass = "") {
             if (!busNum || !inputPass) return showCustomAlert("تنبيه", "أدخل رقم القاعة/المجموعة وكلمة المرور!", 'warning');
 
-            let correctPass = "driver";
+            try {
+                const driverRef = db.collection("settings").doc("driver");
+                const driverSnap = await driverRef.get();
+
+                if (driverSnap.exists && driverSnap.data().password) {
+                    const correctPass = driverSnap.data().password;
+                    if (inputPass === correctPass) {
+                        currentBusNumber = busNum;
+                        document.getElementById('currentDriverBusTitle').innerText = busNum;
+                        document.getElementById('logsBusNumTitle').innerText = busNum;
+                        document.getElementById('btnBusNumTitle').innerText = busNum;
+
+                        document.getElementById('driverReportDate').value = todayStr;
+                        currentDriverReportDate = todayStr;
+                        document.getElementById('logsDateTitle').innerText = currentDriverReportDate;
+
+                        unlockDriverScreens();
+                        setupDriverAttendanceListener();
+                    } else {
+                        showCustomAlert("خطأ في الدخول", "كلمة مرور المشرف/المساعد غير صحيحة!", 'error');
+                    }
+                } else {
+                    if (inputPass.length < 4) {
+                        return showCustomAlert("كلمة مرور ضعيفة", "كلمة المرور لأول مرة يجب أن لا تقل عن 4 رموز!", 'warning');
+                    }
+                    if (confirmPass && inputPass !== confirmPass) {
+                        return showCustomAlert("تنبيه", "كلمتا المرور غير متطابقتين!", 'warning');
+                    }
+
+                    await driverRef.set({
+                        password: inputPass,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+
+                    showCustomAlert("تم التفعيل بنجاح", "تم إنشاء وتعيين كلمة المرور للمشرفين بنجاح!", 'success');
+                    
+                    currentBusNumber = busNum;
+                    document.getElementById('currentDriverBusTitle').innerText = busNum;
+                    document.getElementById('logsBusNumTitle').innerText = busNum;
+                    document.getElementById('btnBusNumTitle').innerText = busNum;
+
+                    unlockDriverScreens();
+                    setupDriverAttendanceListener();
+                }
+            } catch(e) {
+                console.error(e);
+                showCustomAlert("خطأ في الاتصال", "حدث خطأ أثناء الاتصال بالسيرفر!", 'error');
+            }
+        }
+
+        function toggleDriverForgotPass(showForgot) {
+            document.getElementById('driverAuthCardScan').style.display = showForgot ? 'none' : 'block';
+            document.getElementById('driverForgotCard').style.display = showForgot ? 'block' : 'none';
+        }
+
+        async function resetDriverPassword() {
+            const adminEmail = document.getElementById('resetDriverAdminEmail').value.trim();
+            const newPass = document.getElementById('resetDriverNewPass').value.trim();
+
+            if (!adminEmail || !newPass) {
+                return showCustomAlert("تنبيه", "يرجى ملء البريد الإلكتروني للإدارة وكلمة السر الجديدة!", 'warning');
+            }
+
+            if (newPass.length < 4) {
+                return showCustomAlert("تنبيه", "كلمة السر الجديدة يجب ألا تقل عن 4 رموز!", 'warning');
+            }
 
             try {
-                const driverSnap = await db.collection("settings").doc("driver").get();
-                if (driverSnap.exists && driverSnap.data().password) {
-                    correctPass = driverSnap.data().password;
+                const currentUser = firebase.auth().currentUser;
+                if (!currentUser || currentUser.email.toLowerCase() !== adminEmail.toLowerCase()) {
+                    return showCustomAlert("تأكيد الصلاحية", "يجب أن تكون مسجلاً كـ أدمن بذات البريد لإعادة التعيين!", 'warning');
                 }
-            } catch(e) {}
 
-            if (inputPass === correctPass) {
-                currentBusNumber = busNum;
-                document.getElementById('currentDriverBusTitle').innerText = busNum;
-                document.getElementById('logsBusNumTitle').innerText = busNum;
-                document.getElementById('btnBusNumTitle').innerText = busNum;
+                await db.collection("settings").doc("driver").set({
+                    password: newPass,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
 
-                document.getElementById('driverReportDate').value = todayStr;
-                currentDriverReportDate = todayStr;
-                document.getElementById('logsDateTitle').innerText = currentDriverReportDate;
+                showCustomAlert("تم إعادة التعيين", "تم تحديث كلمة سر المشرفين والمساعدين بنجاح!", 'success');
+                toggleDriverForgotPass(false);
+                document.getElementById('driverPassScan').value = newPass;
 
-                unlockDriverScreens();
-                setupDriverAttendanceListener();
-            } else {
-                showCustomAlert("خطأ في الدخول", "كلمة مرور المشرف غير صحيحة!", 'error');
+            } catch (e) {
+                showCustomAlert("خطأ", "تعذر استعادة كلمة السر، تأكد من الاتصال والصلاحيات!", 'error');
             }
         }
 
@@ -1168,6 +1333,7 @@
             document.getElementById('driverLogsContent').style.display = 'none';
 
             document.getElementById('driverPassScan').value = '';
+            document.getElementById('driverPassConfirmScan').value = '';
             document.getElementById('driverPassLogs').value = '';
         }
 
@@ -1882,7 +2048,7 @@
                     return showCustomAlert("خطأ", "كلمة السر الحالية للمشرفين غير صحيحة!", 'error');
                 }
 
-                await db.collection("settings").doc("driver").set({ password: newPass }, { merge: true });
+                await db.collection("settings").doc("driver").set({ password: newPass, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
 
                 document.getElementById('oldDriverPassInput').value = '';
                 document.getElementById('newDriverPassInput').value = '';
@@ -2489,7 +2655,7 @@
         function shareApp() {
             toggleSidebar();
             const webUrl = 'https://wasafatbety.github.io/masar-app/';
-            const downloadUrl = 'https://www.appcreator24.com/app4201237-z4ija2';
+            const downloadUrl = 'https://www.appcreator24.com/app4219416-krulo3';
             
             const shareText = 
 `🎓✨ *منظومة مسار التعليمية | Masar Edu* ✨🎓
@@ -2507,7 +2673,7 @@ ${webUrl}
 📥 *رابط تحميل التطبيق المباشر (APK):*
 ${downloadUrl}
 
-💡 شارك المنظومة فقط للمشتركين (الطلاب وأولياء الأمور) بالسنتر! ❤️`;
+💡 شارك المنظومة للمشتركين (الطلاب وأولياء الأمور) بالسنتر! ❤️`;
 
             const shareData = {
                 title: 'تطبيق مسار التعليمي لإدارة السناتر والقاعات والتحقق الذكي',
