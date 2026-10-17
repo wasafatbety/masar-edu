@@ -951,14 +951,20 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyACDQJzC_4XRlASJvKaK7ZSr748p0TU__I",
-            authDomain: "masar-edu-center.firebaseapp.com",
-            projectId: "masar-edu-center",
-            storageBucket: "masar-edu-center.firebasestorage.app",
-            messagingSenderId: "719366846088",
-            appId: "1:719366846088:web:3944fd7056db595b2e113d"
-        };
+        // فك تشفير البيانات الحساسة ديناميكياً أثناء التشغيل
+const _d = (s) => atob(s);
+
+const firebaseConfig = {
+    apiKey: _d("QUl6YVN5QUNEUUp6Q180WFJsQVNKdkthSzdaU3I3NDhwMFRVX19J"),
+    authDomain: _d("bWFzYXItZWR1LWNlbnRlci5maXJlYmFzZWFwcC5jb20="),
+    projectId: _d("bWFzYXItZWR1LWNlbnRlcg=="),
+    storageBucket: _d("bWFzYXItZWR1LWNlbnRlci5maXJlYmFzdG9yYWdlLmFwcA=="),
+    messagingSenderId: _d("NzE5MzY2ODQ2MDg4"),
+    appId: _d("MTo3MTkzNjY4NDYwODg6d2ViOjM5NDRmNzAwNTZkYjU5NWIyZTExM2Q=")
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -2654,7 +2660,7 @@
 
         function shareApp() {
             toggleSidebar();
-            const webUrl = 'https://wasafatbety.github.io/masar-app/';
+            const webUrl = 'https://wasafatbety.github.io/masar-edu';
             const downloadUrl = 'https://www.appcreator24.com/app4219416-krulo3';
             
             const shareText = 
@@ -2673,7 +2679,7 @@ ${webUrl}
 📥 *رابط تحميل التطبيق المباشر (APK):*
 ${downloadUrl}
 
-💡 شارك المنظومة للمشتركين (الطلاب وأولياء الأمور) بالسنتر! ❤️`;
+💡 شارك المنظومة للمشتركين فقط (الطلاب وأولياء الأمور) بالسنتر! ❤️`;
 
             const shareData = {
                 title: 'تطبيق مسار التعليمي لإدارة السناتر والقاعات والتحقق الذكي',
