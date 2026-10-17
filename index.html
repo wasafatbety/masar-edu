@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- PWA Web App Manifest -->
+    <!-- ربط ملف الـ Manifest للاختصار -->
 <link rel="manifest" href="manifest.json">
 
-<!-- تخصيص أجهزة Apple/iOS وشريط المتصفح -->
+<!-- تخصيص شريط المتصفح والألوان -->
 <meta name="theme-color" content="#0f172a">
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- تخصيص أجهزة أبل iOS (آيفون وآيباد) -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="مسار">
@@ -2742,14 +2745,33 @@ ${downloadUrl}
         e.preventDefault();
     });
 </script>
-    <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => console.log('Masar Edu Service Worker Registered:', reg.scope))
-        .catch((err) => console.error('Service Worker Registration Failed:', err));
+   <script>
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // منع ظهور النافذة الافتراضية المباشرة
+        e.preventDefault();
+        deferredPrompt = e;
+
+        // إظهار تنبيه للمستخدم لإضافة الاختصار
+        setTimeout(() => {
+            if (deferredPrompt) {
+                showCustomConfirm(
+                    "📱 إضافة اختصار للتطبيق",
+                    "هل ترغب في إضافة اختصار 'منظومة مسار' إلى الشاشة الرئيسية لهاتفك للوصول السريع؟",
+                    () => {
+                        deferredPrompt.prompt();
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('تم إضافة الاختصار بنجاح');
+                            }
+                            deferredPrompt = null;
+                        });
+                    }
+                );
+            }
+        }, 3000); // يظهر بعد 3 ثوانٍ من فتح الصفحة
     });
-  }
 </script>
 </body>
 </html>
