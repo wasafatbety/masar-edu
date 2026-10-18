@@ -3,15 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مسار التعليمي | Masar Edu - المنظومة الذكية لإدارة القاعات والسناتر</title>
-       <!-- PWA Manifest & Icons -->
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#2563eb">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="مسار التعليمي">
-    <link rel="apple-touch-icon" href="./icon-192.png">
+    <title>مسار التعليمي | Masar Edu system - المنظومة الذكية لإدارة القاعات والسناتر</title>
+         <!-- ربط ملف الـ Manifest -->
+<link rel="manifest" href="manifest.json">
+
+<!-- تحديد لون شريط العنوان وشعار آيفون/iOS -->
+<meta name="theme-color" content="#ffffff">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- تسجيل الـ Service Worker -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('Service Worker Registered'))
+        .catch(err => console.error('Service Worker Error:', err));
+    });
+  }
+</script>   
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
