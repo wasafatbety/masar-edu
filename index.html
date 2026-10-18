@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- ربط ملف الـ Manifest -->
+  <!-- ربط ملف الـ Manifest -->
 <link rel="manifest" href="manifest.json">
 
 <!-- تحديد لون شريط العنوان وشعار آيفون/iOS -->
@@ -18,10 +18,11 @@
     });
   }
 </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مسار التعليمي | Masar Edu system - المنظومة الذكية لإدارة القاعات والسناتر</title>
-           <!-- FontAwesome Icons -->
+    <title>مسار التعليمي | Masar Edu - المنظومة الذكية لإدارة القاعات والسناتر</title>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -125,7 +126,6 @@
         .portal-card i { font-size: 2.3rem; color: var(--primary); }
         .portal-card h3 { font-size: 0.95rem; color: white; font-weight: 700; }
 
-        /* Unified Portal Styles */
         .portal-tabs {
             display: flex; gap: 6px; background: rgba(0, 0, 0, 0.3); padding: 6px; border-radius: 14px; margin-bottom: 20px; border: 1px solid var(--card-border);
         }
@@ -334,7 +334,6 @@
                     <p style="font-size: 0.8rem; color: var(--text-muted);">بوابة الدخول الذكية للخدمات التعليمية والقاعات</p>
                 </div>
 
-                <!-- Interactive Tabs Bar -->
                 <div class="portal-tabs">
                     <button id="tabBtnStudent" class="portal-tab-btn active" onclick="selectPortalTab('student')">
                         <i class="fa-solid fa-id-card-clip"></i> الطالب
@@ -421,9 +420,8 @@
                 <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">ادخل رقم الهاتف وكلمة المرور للدخول لمتابعة حضور الطالب المباشر بالقاعات</p>
                 
                 <input type="tel" id="parentPhoneInput" class="input-box" placeholder="رقم هاتف ولي الأمر (مثال: 01012345678)" style="text-align: center; margin-bottom: 10px;">
-                <input type="email" id="parentEmailInput" class="input-box" placeholder="البريد الإلكتروني (لتفعيل الرسائل والإشعارات)" style="text-align: center; margin-bottom: 10px;">
-                <input type="password" id="parentPasswordInput" class="input-box" placeholder="كلمة المرور الخاصة بك" style="text-align: center; margin-bottom: 10px;">
-                <input type="password" id="parentPasswordConfirmInput" class="input-box" placeholder="تأكيد كلمة المرور (عند إنشاء حساب جديد)" style="text-align: center; margin-bottom: 12px;">
+                <input type="email" id="parentEmailInput" class="input-box" placeholder="البريد الإلكتروني (اختياري - لاستعادة الحساب)" style="text-align: center; margin-bottom: 10px;">
+                <input type="password" id="parentPasswordInput" class="input-box" placeholder="كلمة المرور الخاصة بك (6 أحرف أو أكثر)" style="text-align: center; margin-bottom: 10px;">
                 
                 <button class="btn-submit" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="loginOrRegisterParentPortal()">
                     <i class="fa-solid fa-lock"></i> دخول / إنشاء الحساب وتفعيل المتابعة
@@ -440,18 +438,10 @@
 
             <div id="parentForgotCard" class="glass-card" style="display: none; text-align: center;">
                 <i class="fa-solid fa-unlock-keyhole" style="font-size: 2.8rem; color: var(--warning); margin-bottom: 10px;"></i>
-                <h3 style="margin-bottom: 10px; color: var(--warning);">استعادة كلمة المرور لولي الأمر</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">أدخل رقم الهاتف والبريد الإلكتروني المسجلين لإعادة تعيين كلمة المرور</p>
-
-                <input type="tel" id="resetParentPhone" class="input-box" placeholder="رقم الهاتف المسجل" style="text-align: center; margin-bottom: 10px;">
-                <input type="email" id="resetParentEmail" class="input-box" placeholder="البريد الإلكتروني المسجل" style="text-align: center; margin-bottom: 10px;">
-                <input type="password" id="resetParentNewPass" class="input-box" placeholder="كلمة المرور الجديدة" style="text-align: center; margin-bottom: 15px;">
-
-                <button class="btn-submit" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="resetParentPassword()">
-                    <i class="fa-solid fa-arrows-rotate"></i> إعادة تعيين كلمة المرور
-                </button>
+                <h3 style="margin-bottom: 10px; color: var(--warning);">استعادة كلمة المرور</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">لإعادة تعيين كلمة المرور الخاصة بك بأمان، يرجى التواصل مع إدارة السنتر لتأكيد هويتك.</p>
                 <button class="btn-submit" style="background: rgba(255,255,255,0.08); margin-top: 10px;" onclick="toggleParentForgotPass(false)">
-                    إلغاء والعودة لصفحة الدخول
+                    العودة لصفحة الدخول
                 </button>
             </div>
 
@@ -459,7 +449,6 @@
                 <div class="glass-card" style="text-align: center; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
                     <h3 style="font-size: 1.1rem; color: var(--success);"><span class="pulse-live"></span> المتابعة اللحظية لـ ولي الأمر</h3>
                     <p id="parentPhoneTitle" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">رقم المسجل: ---</p>
-                    <p id="parentEmailTitle" style="font-size: 0.75rem; color: var(--text-muted);">---</p>
                     <button class="btn-sm btn-delete" style="margin-top: 10px;" onclick="logoutParentPortal()">خروج</button>
                 </div>
 
@@ -514,40 +503,16 @@
             <div id="driverAuthCardScan" class="glass-card" style="text-align: center;">
                 <i class="fa-solid fa-door-open" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 10px;"></i>
                 <h3 style="margin-bottom: 10px;">دخول مشرف القاعة / المساعد</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">أدخل رقم القاعة وكلمة المرور للدخول وتفعيل الكاميرا والماسح</p>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">أدخل رقم القاعة وكلمة المرور الموحدة للمشرفين</p>
 
                 <input type="text" id="busNumberInputScan" class="input-box" placeholder="رقم القاعة / المجموعة (مثال: قاعة 1 / ثانوية)" style="text-align: center; margin-bottom: 10px;">
-                <input type="password" id="driverPassScan" class="input-box" placeholder="كلمة مرور المشرف / المساعد" style="text-align: center; margin-bottom: 10px;">
-                <input type="password" id="driverPassConfirmScan" class="input-box" placeholder="تأكيد كلمة المرور (عند التفعيل أول مرة)" style="text-align: center; margin-bottom: 12px;">
+                <input type="password" id="driverPassScan" class="input-box" placeholder="كلمة مرور المشرفين" style="text-align: center; margin-bottom: 15px;">
 
                 <button class="btn-submit" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="authenticateDriver()">
-                    <i class="fa-solid fa-lock"></i> تأكيد الدخول / تفعيل كلمة السر
+                    <i class="fa-solid fa-lock"></i> دخول / تفعيل
                 </button>
-
-                <div style="margin-top: 12px;">
-                    <a href="javascript:void(0)" onclick="toggleDriverForgotPass(true)" style="color: var(--warning); font-size: 0.85rem; text-decoration: none; font-weight: bold;">
-                        <i class="fa-solid fa-key"></i> هل نسيت كلمة المرور؟
-                    </a>
-                </div>
 
                 <button class="btn-submit" style="background: rgba(255,255,255,0.08); margin-top: 15px;" onclick="switchUserRole('selector')">العودة للشاشة الرئيسية</button>
-            </div>
-
-            <!-- FORGOT DRIVER PASSWORD CARD -->
-            <div id="driverForgotCard" class="glass-card" style="display: none; text-align: center;">
-                <i class="fa-solid fa-unlock-keyhole" style="font-size: 2.8rem; color: var(--warning); margin-bottom: 10px;"></i>
-                <h3 style="margin-bottom: 10px; color: var(--warning);">استعادة كلمة سر المشرف / المساعد</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">يتطلب إعادة تعيين كلمة السر تأكيد البريد الإلكتروني الخاص بالإدارة لضمان الأمان</p>
-
-                <input type="email" id="resetDriverAdminEmail" class="input-box" placeholder="بريد الأدمن لتأكيد الصلاحية" style="text-align: center; margin-bottom: 10px;">
-                <input type="password" id="resetDriverNewPass" class="input-box" placeholder="كلمة السر الجديدة للمشرفين" style="text-align: center; margin-bottom: 15px;">
-
-                <button class="btn-submit" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="resetDriverPassword()">
-                    <i class="fa-solid fa-arrows-rotate"></i> إعادة تعيين كلمة السر
-                </button>
-                <button class="btn-submit" style="background: rgba(255,255,255,0.08); margin-top: 10px;" onclick="toggleDriverForgotPass(false)">
-                    إلغاء والعودة لصفحة الدخول
-                </button>
             </div>
 
             <div id="driverScanContent" style="display: none;">
@@ -631,9 +596,8 @@
                 <button class="btn-submit" onclick="authenticateAdmin()">تأكيد الدخول الآمن</button>
 
                 <div style="margin-top: 15px; border-top: 1px dashed var(--card-border); padding-top: 12px;">
-                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px;">تجهيز المنظومة لأول مرة فقط؟</p>
                     <button class="btn-submit" style="background: rgba(16, 185, 129, 0.2); border: 1px solid var(--success); font-size: 0.85rem; padding: 10px;" onclick="registerFirstAdmin()">
-                        <i class="fa-solid fa-user-plus"></i> إنشاء / تسجيل حساب أدمن السنتر لأول مرة
+                        <i class="fa-solid fa-user-plus"></i> إنشاء حساب الإدارة لأول مرة
                     </button>
                 </div>
                 <button class="btn-submit" style="background: rgba(255,255,255,0.08); margin-top: 10px;" onclick="switchUserRole('selector')">العودة للشاشة الرئيسية</button>
@@ -697,7 +661,7 @@
 
                 <div class="collapsible-card">
                     <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3 style="color: var(--warning);"><i class="fa-solid fa-key"></i> تغيير كلمة السر للإدارة والإشراف</h3>
+                        <h3 style="color: var(--warning);"><i class="fa-solid fa-key"></i> تغيير كلمة السر للإدارة</h3>
                         <i class="fa-solid fa-chevron-down collapsible-icon"></i>
                     </div>
                     <div class="collapsible-content">
@@ -712,19 +676,6 @@
                                 <input type="password" id="newAdminPassInput" class="input-box" placeholder="أدخل كلمة السر الجديدة">
                             </div>
                             <button class="btn-submit" onclick="changeAdminPassword()"><i class="fa-solid fa-arrows-rotate"></i> تحديث كلمة سر الإدارة</button>
-                        </div>
-
-                        <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid var(--card-border);">
-                            <h4 style="color: var(--success); font-size: 0.95rem; margin-bottom: 10px;"><i class="fa-solid fa-door-closed"></i> تغيير كلمة سر المشرفين / ماسحي القاعات</h4>
-                            <div class="form-group">
-                                <label>كلمة السر الحالية للمشرفين</label>
-                                <input type="password" id="oldDriverPassInput" class="input-box" placeholder="أدخل كلمة السر الحالية للمشرفين">
-                            </div>
-                            <div class="form-group">
-                                <label>كلمة السر الجديدة للمشرفين</label>
-                                <input type="password" id="newDriverPassInput" class="input-box" placeholder="أدخل كلمة السر الجديدة">
-                            </div>
-                            <button class="btn-submit" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="changeDriverPassword()"><i class="fa-solid fa-arrows-rotate"></i> تحديث كلمة سر المشرفين</button>
                         </div>
                     </div>
                 </div>
@@ -966,8 +917,8 @@
             <div id="customDialogBtns" class="custom-dialog-btns"></div>
         </div>
     </div>
-
-    <script>
+<script>
+        // -- إعدادات قاعدة البيانات --
         const firebaseConfig = {
             apiKey: "AIzaSyACDQJzC_4XRlASJvKaK7ZSr748p0TU__I",
             authDomain: "masar-edu-center.firebaseapp.com",
@@ -1227,11 +1178,13 @@
             }
         }
 
+        /* ---------------------------------------------------------------------------------
+           [تعديل أمني: تسجيل دخول المشرف باستخدام Authentication بدلاً من النص الصريح]
+           --------------------------------------------------------------------------------- */
         async function authenticateDriver() {
             const busNum = document.getElementById('busNumberInputScan').value.trim();
             const pass = document.getElementById('driverPassScan').value.trim();
-            const confirmPass = document.getElementById('driverPassConfirmScan').value.trim();
-            await checkDriverLogin(busNum, pass, confirmPass);
+            await checkDriverLogin(busNum, pass);
         }
 
         async function authenticateDriverLogs() {
@@ -1240,94 +1193,55 @@
             await checkDriverLogin(busNum, pass);
         }
 
-        /* Enhanced Driver / Assistant Authentication & Password Management */
-        async function checkDriverLogin(busNum, inputPass, confirmPass = "") {
+        async function checkDriverLogin(busNum, inputPass) {
             if (!busNum || !inputPass) return showCustomAlert("تنبيه", "أدخل رقم القاعة/المجموعة وكلمة المرور!", 'warning');
 
-            try {
-                const driverRef = db.collection("settings").doc("driver");
-                const driverSnap = await driverRef.get();
+            // ايميل وهمي موحد لجميع مشرفي القاعات
+            const driverAuthEmail = "supervisor@masaredu.com";
 
-                if (driverSnap.exists && driverSnap.data().password) {
-                    const correctPass = driverSnap.data().password;
-                    if (inputPass === correctPass) {
+            try {
+                // محاولة تسجيل الدخول
+                await firebase.auth().signInWithEmailAndPassword(driverAuthEmail, inputPass);
+                
+                // تم الدخول بنجاح
+                currentBusNumber = busNum;
+                document.getElementById('currentDriverBusTitle').innerText = busNum;
+                document.getElementById('logsBusNumTitle').innerText = busNum;
+                document.getElementById('btnBusNumTitle').innerText = busNum;
+
+                document.getElementById('driverReportDate').value = todayStr;
+                currentDriverReportDate = todayStr;
+                document.getElementById('logsDateTitle').innerText = currentDriverReportDate;
+
+                unlockDriverScreens();
+                setupDriverAttendanceListener();
+
+            } catch(e) {
+                // إذا لم يكن حساب المشرف موجوداً، يتم إنشاؤه (يحدث أول مرة فقط)
+                if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
+                    if (inputPass.length < 6) {
+                        return showCustomAlert("كلمة مرور ضعيفة", "يجب أن تتكون كلمة المرور من 6 رموز على الأقل!", 'warning');
+                    }
+                    try {
+                        await firebase.auth().createUserWithEmailAndPassword(driverAuthEmail, inputPass);
+                        showCustomAlert("تم التفعيل بنجاح", "تم إنشاء وتعيين كلمة المرور للمشرفين بنجاح!", 'success');
+                        
                         currentBusNumber = busNum;
                         document.getElementById('currentDriverBusTitle').innerText = busNum;
                         document.getElementById('logsBusNumTitle').innerText = busNum;
                         document.getElementById('btnBusNumTitle').innerText = busNum;
 
-                        document.getElementById('driverReportDate').value = todayStr;
-                        currentDriverReportDate = todayStr;
-                        document.getElementById('logsDateTitle').innerText = currentDriverReportDate;
-
                         unlockDriverScreens();
                         setupDriverAttendanceListener();
-                    } else {
-                        showCustomAlert("خطأ في الدخول", "كلمة مرور المشرف/المساعد غير صحيحة!", 'error');
+                    } catch(err) {
+                        showCustomAlert("خطأ في الإنشاء", "حدث خطأ أثناء تفعيل حساب المشرفين!", 'error');
                     }
+                } else if (e.code === 'auth/wrong-password') {
+                    showCustomAlert("خطأ في الدخول", "كلمة مرور المشرف/المساعد غير صحيحة!", 'error');
                 } else {
-                    if (inputPass.length < 4) {
-                        return showCustomAlert("كلمة مرور ضعيفة", "كلمة المرور لأول مرة يجب أن لا تقل عن 4 رموز!", 'warning');
-                    }
-                    if (confirmPass && inputPass !== confirmPass) {
-                        return showCustomAlert("تنبيه", "كلمتا المرور غير متطابقتين!", 'warning');
-                    }
-
-                    await driverRef.set({
-                        password: inputPass,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }, { merge: true });
-
-                    showCustomAlert("تم التفعيل بنجاح", "تم إنشاء وتعيين كلمة المرور للمشرفين بنجاح!", 'success');
-                    
-                    currentBusNumber = busNum;
-                    document.getElementById('currentDriverBusTitle').innerText = busNum;
-                    document.getElementById('logsBusNumTitle').innerText = busNum;
-                    document.getElementById('btnBusNumTitle').innerText = busNum;
-
-                    unlockDriverScreens();
-                    setupDriverAttendanceListener();
+                    console.error(e);
+                    showCustomAlert("خطأ في الاتصال", "كلمة المرور غير صحيحة أو خطأ بالاتصال", 'error');
                 }
-            } catch(e) {
-                console.error(e);
-                showCustomAlert("خطأ في الاتصال", "حدث خطأ أثناء الاتصال بالسيرفر!", 'error');
-            }
-        }
-
-        function toggleDriverForgotPass(showForgot) {
-            document.getElementById('driverAuthCardScan').style.display = showForgot ? 'none' : 'block';
-            document.getElementById('driverForgotCard').style.display = showForgot ? 'block' : 'none';
-        }
-
-        async function resetDriverPassword() {
-            const adminEmail = document.getElementById('resetDriverAdminEmail').value.trim();
-            const newPass = document.getElementById('resetDriverNewPass').value.trim();
-
-            if (!adminEmail || !newPass) {
-                return showCustomAlert("تنبيه", "يرجى ملء البريد الإلكتروني للإدارة وكلمة السر الجديدة!", 'warning');
-            }
-
-            if (newPass.length < 4) {
-                return showCustomAlert("تنبيه", "كلمة السر الجديدة يجب ألا تقل عن 4 رموز!", 'warning');
-            }
-
-            try {
-                const currentUser = firebase.auth().currentUser;
-                if (!currentUser || currentUser.email.toLowerCase() !== adminEmail.toLowerCase()) {
-                    return showCustomAlert("تأكيد الصلاحية", "يجب أن تكون مسجلاً كـ أدمن بذات البريد لإعادة التعيين!", 'warning');
-                }
-
-                await db.collection("settings").doc("driver").set({
-                    password: newPass,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
-
-                showCustomAlert("تم إعادة التعيين", "تم تحديث كلمة سر المشرفين والمساعدين بنجاح!", 'success');
-                toggleDriverForgotPass(false);
-                document.getElementById('driverPassScan').value = newPass;
-
-            } catch (e) {
-                showCustomAlert("خطأ", "تعذر استعادة كلمة السر، تأكد من الاتصال والصلاحيات!", 'error');
             }
         }
 
@@ -1342,6 +1256,7 @@
         function logoutDriver() {
             currentBusNumber = null;
             stopScanner();
+            firebase.auth().signOut();
 
             document.getElementById('driverAuthCardScan').style.display = 'block';
             document.getElementById('driverScanContent').style.display = 'none';
@@ -1350,10 +1265,12 @@
             document.getElementById('driverLogsContent').style.display = 'none';
 
             document.getElementById('driverPassScan').value = '';
-            document.getElementById('driverPassConfirmScan').value = '';
             document.getElementById('driverPassLogs').value = '';
         }
 
+        /* ---------------------------------------------------------------------------------
+           [تعديل أمني: تسجيل دخول أولياء الأمور عبر Auth وحماية الباسوورد]
+           --------------------------------------------------------------------------------- */
         function toggleParentForgotPass(showForgot) {
             document.getElementById('parentAuthCard').style.display = showForgot ? 'none' : 'block';
             document.getElementById('parentForgotCard').style.display = showForgot ? 'block' : 'none';
@@ -1361,55 +1278,39 @@
 
         async function loginOrRegisterParentPortal() {
             const phone = document.getElementById('parentPhoneInput').value.trim();
-            const email = document.getElementById('parentEmailInput').value.trim();
+            const emailInput = document.getElementById('parentEmailInput').value.trim();
             const password = document.getElementById('parentPasswordInput').value.trim();
-            const confirmPass = document.getElementById('parentPasswordConfirmInput').value.trim();
-
+            
             if (!phone || !password) {
                 return showCustomAlert("تنبيه", "يرجى إدخال رقم الهاتف وكلمة المرور!", 'warning');
             }
 
+            if (password.length < 6) {
+                return showCustomAlert("كلمة مرور ضعيفة", "يجب ألا تقل كلمة المرور عن 6 أحرف/أرقام!", 'warning');
+            }
+
+            // الحيلة: تحويل رقم الهاتف إلى إيميل ليقبله نظام مصادقة فايربيز ويقوم بتشفير الباسوورد مجاناً
+            const authEmail = `${phone}@masaredu.com`;
+
             try {
-                const parentRef = db.collection("parents").doc(phone);
-                let parentSnap;
-
+                let userCredential;
                 try {
-                    parentSnap = await parentRef.get();
-                } catch (e) {
-                    parentSnap = { exists: false };
-                }
-
-                if (parentSnap && parentSnap.exists) {
-                    const parentData = parentSnap.data();
-                    if (parentData.password !== password) {
-                        return showCustomAlert("خطأ في الدخول", "كلمة المرور لولي الأمر غير صحيحة!", 'error');
-                    }
-
-                    if (email && email !== parentData.email) {
-                        await parentRef.set({ email: email }, { merge: true });
-                        sendActivationNoticeModal(email, phone);
-                    }
-
-                } else {
-                    if (password.length < 4) {
-                        return showCustomAlert("كلمة مرور ضعيفة", "يجب ألا تقل كلمة المرور عن 4 رموز!", 'warning');
-                    }
-
-                    if (confirmPass && password !== confirmPass) {
-                        return showCustomAlert("تنبيه", "كلمتا المرور غير متطابقتين!", 'warning');
-                    }
-
-                    await parentRef.set({
-                        phone: phone,
-                        email: email || "",
-                        password: password,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }, { merge: true });
-
-                    if (email) {
-                        sendActivationNoticeModal(email, phone);
-                    } else {
+                    // محاولة تسجيل الدخول
+                    userCredential = await firebase.auth().signInWithEmailAndPassword(authEmail, password);
+                } catch (authError) {
+                    // إذا لم يكن الحساب موجوداً، نقوم بإنشائه (تسجيل جديد)
+                    if (authError.code === 'auth/user-not-found' || authError.code === 'auth/invalid-credential') {
+                        userCredential = await firebase.auth().createUserWithEmailAndPassword(authEmail, password);
+                        
+                        // حفظ بيانات ولي الأمر الإضافية في Firestore لربط الأبناء به (دون حفظ كلمة السر)
+                        await db.collection("parents").doc(userCredential.user.uid).set({
+                            phone: phone,
+                            realEmail: emailInput || "",
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
                         showCustomAlert("تم إنشاء الحساب", "تم إنشاء كلمة المرور الخاصة بك وتفعيل الحساب بنجاح!", 'success');
+                    } else {
+                        throw authError; // تمرير الخطأ (مثل باسوورد خطأ)
                     }
                 }
 
@@ -1417,81 +1318,28 @@
                 document.getElementById('parentAuthCard').style.display = 'none';
                 document.getElementById('parentPortalContent').style.display = 'block';
                 document.getElementById('parentPhoneTitle').innerText = `رقم ولي الأمر المتابع: ${phone}`;
-                document.getElementById('parentEmailTitle').innerText = email ? `البريد الإلكتروني: ${email}` : (parentSnap.exists && parentSnap.data().email ? `البريد الإلكتروني: ${parentSnap.data().email}` : 'البريد الإلكتروني: غير مسجل');
-
+                
                 requestNotificationPermission();
                 setupParentNotificationsListener(phone);
                 loadParentChildrenFinancials(phone);
 
             } catch(e) {
-                console.error(e);
-                showCustomAlert("خطأ في الاتصال", "حدث خطأ أثناء الاتصال بالسيرفر!", 'error');
-            }
-        }
-
-        function sendActivationNoticeModal(email, phone) {
-            showCustomConfirm(
-                "📧 رسالة تفعيل البريد الإلكتروني",
-                `تم ربط بريدك الإلكتروني (${email}) بنجاح بحساب ولي الأمر رقم (${phone}).\n\nهل ترغب في فتح تطبيق البريد الآن لتأكيد واستلام رسالة التفعيل؟`,
-                () => {
-                    try {
-                        const subject = encodeURIComponent("تفعيل حساب ولي الأمر - منظومة مسار التعليمية");
-                        const body = encodeURIComponent(`مرحباً بك، تم تفعيل ربط بريدك الإلكتروني بنجاح بحساب ولي الأمر رقم: ${phone}`);
-                        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
-                    } catch (err) {}
+                if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+                    showCustomAlert("خطأ في الدخول", "كلمة المرور غير صحيحة!", 'error');
+                } else {
+                    console.error(e);
+                    showCustomAlert("خطأ في الاتصال", "حدث خطأ أثناء الاتصال بالسيرفر!", 'error');
                 }
-            );
-        }
-
-        async function resetParentPassword() {
-            const phone = document.getElementById('resetParentPhone').value.trim();
-            const email = document.getElementById('resetParentEmail').value.trim();
-            const newPass = document.getElementById('resetParentNewPass').value.trim();
-
-            if (!phone || !email || !newPass) {
-                return showCustomAlert("تنبيه", "يرجى ملء جميع البيانات المطلوبة لاستعادة كلمة المرور!", 'warning');
-            }
-
-            if (newPass.length < 4) {
-                return showCustomAlert("تنبيه", "كلمة المرور الجديدة يجب أن تكون 4 رموز على الأقل!", 'warning');
-            }
-
-            try {
-                const parentRef = db.collection("parents").doc(phone);
-                const parentSnap = await parentRef.get();
-
-                if (!parentSnap.exists) {
-                    return showCustomAlert("خطأ", "رقم هاتف ولي الأمر غير مسجل بالنظام!", 'error');
-                }
-
-                const data = parentSnap.data();
-                if (data.email && data.email.toLowerCase() !== email.toLowerCase()) {
-                    return showCustomAlert("خطأ في التحقق", "البريد الإلكتروني المدخل لا يطابق البريد المسجل لهذا الرقم!", 'error');
-                }
-
-                await parentRef.set({
-                    password: newPass,
-                    email: email
-                }, { merge: true });
-
-                showCustomAlert("تم إعادة التعيين", "تم تحديث كلمة المرور الخاصة بك بنجاح! يمكنك الآن تسجيل الدخول بها.", 'success');
-                toggleParentForgotPass(false);
-
-                document.getElementById('parentPhoneInput').value = phone;
-                document.getElementById('parentPasswordInput').value = newPass;
-
-            } catch (e) {
-                showCustomAlert("خطأ", "تعذر استعادة كلمة المرور، تأكد من الاتصال بالسيرفر!", 'error');
             }
         }
 
         function logoutParentPortal() {
             if (unsubscribeParent) unsubscribeParent();
             currentParentPhone = null;
+            firebase.auth().signOut();
             document.getElementById('parentAuthCard').style.display = 'block';
             document.getElementById('parentPortalContent').style.display = 'none';
             document.getElementById('parentPasswordInput').value = '';
-            document.getElementById('parentPasswordConfirmInput').value = '';
         }
 
         function loadParentChildrenFinancials(phone) {
@@ -1955,8 +1803,7 @@
             document.getElementById('exportText').value = text;
             document.getElementById('exportModal').style.display = 'flex';
         }
-
-        async function authenticateAdmin() {
+async function authenticateAdmin() {
             const email = document.getElementById('adminEmailInput').value.trim();
             const pass = document.getElementById('adminPass').value.trim();
 
@@ -1983,7 +1830,15 @@
             }
         }
 
+        /* [تعديل أمني: منع إنشاء حساب أدمن مفتوح للجميع] */
         async function registerFirstAdmin() {
+            const secretKey = prompt("لإنشاء حساب الإدارة، يرجى إدخال كود تفعيل السنتر الخاص بك:");
+            
+            // قم بتغيير هذا الكود إلى أي كلمة سر ترغب بها لحماية زر إنشاء الأدمن
+            if (secretKey !== "MASAR2026") {
+                return showCustomAlert("مرفوض", "كود التفعيل غير صحيح، لا يمكنك إنشاء حساب إدارة!", 'error');
+            }
+
             const email = document.getElementById('adminEmailInput').value.trim();
             const pass = document.getElementById('adminPass').value.trim();
 
@@ -2043,36 +1898,6 @@
                 showCustomAlert("نجاح التغيير", "تم تحديث كلمة سر لوحة إدارة السنتر بنجاح!", 'success');
             } catch (e) {
                 showCustomAlert("خطأ", "كلمة السر الحالية غير صحيحة أو أن الجديدة ضعيفة (يجب أن تكون 6 أحرف على الأقل)!", 'error');
-            }
-        }
-
-        async function changeDriverPassword() {
-            const oldPass = document.getElementById('oldDriverPassInput').value.trim();
-            const newPass = document.getElementById('newDriverPassInput').value.trim();
-
-            if (!oldPass || !newPass) {
-                return showCustomAlert("تنبيه", "يرجى إدخال كلمة السر الحالية والجديدة للمشرفين!", 'warning');
-            }
-
-            try {
-                let currentPassInDb = "driver";
-                const driverSnap = await db.collection("settings").doc("driver").get();
-                if (driverSnap.exists && driverSnap.data().password) {
-                    currentPassInDb = driverSnap.data().password;
-                }
-
-                if (oldPass !== currentPassInDb) {
-                    return showCustomAlert("خطأ", "كلمة السر الحالية للمشرفين غير صحيحة!", 'error');
-                }
-
-                await db.collection("settings").doc("driver").set({ password: newPass, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
-
-                document.getElementById('oldDriverPassInput').value = '';
-                document.getElementById('newDriverPassInput').value = '';
-
-                showCustomAlert("نجاح التغيير", "تم تغيير كلمة سر مشرفي القاعات بنجاح!", 'success');
-            } catch (e) {
-                showCustomAlert("خطأ", "حدث خطأ أثناء تحديث كلمة السر للسيرفر!", 'error');
             }
         }
 
@@ -2576,7 +2401,7 @@
                 const disc = Number(st.feeDiscount) || 0;
                 const req = tot;
                 const rem = Math.max(0, (tot - disc) - paid);
-                text += `${st.id}\t${st.name}\t${st.parentPhone || "غير مسجل"}\t${st.semester || "الترم الأول"}\t${st.status || "مفعل"}\t${tot}\t${disc}\t${req}\t${paid}\t${rem}\t${st.dueDate || "غير محدد"}\n`;
+                text += `${st.id}\t${st.name}\t${st.parentPhone || "غير مسجل"}\t${st.semester || "الترم الأول"}\t${st.status || "م مفعل"}\t${tot}\t${disc}\t${req}\t${paid}\t${rem}\t${st.dueDate || "غير محدد"}\n`;
             });
 
             document.getElementById('modalTitle').innerText = `التقرير المالي ومديونيات الطلاب (${targetSemester}) - مسار التعليمي`;
@@ -2744,62 +2569,7 @@ ${downloadUrl}
         e.preventDefault();
     });
 </script>
-       <!-- INSTALL PWA BANNER -->
-    <div id="pwaInstallBanner" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(12px); border: 1px solid var(--primary); border-radius: 18px; padding: 16px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.6); text-align: center;">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-            <img src="./icon-192.png" alt="Logo" style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover;">
-            <div style="text-align: right; flex: 1;">
-                <h4 style="font-size: 0.95rem; color: #fff; margin: 0;">تثبيت تطبيق مسار التعليمي</h4>
-                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 2px 0 0 0;">قم بإضافة التطبيق على شاشتك الرئيسية للوصول السريع</p>
-            </div>
-        </div>
-        <div style="display: flex; gap: 8px;">
-            <button id="btnPwaInstall" class="btn-submit" style="padding: 10px; font-size: 0.85rem; flex: 1; background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
-                <i class="fa-solid fa-download"></i> تثبيت الآن
-            </button>
-            <button onclick="dismissPwaBanner()" class="btn-submit" style="padding: 10px; font-size: 0.85rem; width: 80px; background: rgba(255,255,255,0.1);">
-                إلغاء
-            </button>
-        </div>
-    </div>
-
-    <!-- REGISTER SERVICE WORKER & PWA LOGIC -->
-    <script>
-        let deferredPrompt;
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW Registered!', reg))
-                    .catch(err => console.error('SW Registration Failed!', err));
-            });
-        }
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const banner = document.getElementById('pwaInstallBanner');
-            if (banner) banner.style.display = 'block';
-        });
-
-        document.getElementById('btnPwaInstall')?.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                }
-                deferredPrompt = null;
-                dismissPwaBanner();
-            }
-        });
-
-        function dismissPwaBanner() {
-            const banner = document.getElementById('pwaInstallBanner');
-            if (banner) banner.style.display = 'none';
-        }
-    </script>
-        <!-- زر تثبيت اختياري يظهر فقط عند استيفاء شروط المتصفح -->
+ <!-- زر تثبيت اختياري يظهر فقط عند استيفاء شروط المتصفح -->
 <button id="installApp" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; padding: 12px 20px; font-size: 0.9rem; font-weight: bold; font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); cursor: pointer;">
   📲 تثبيت تطبيق مسار بلس على الشاشة
 </button>
