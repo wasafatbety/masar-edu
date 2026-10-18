@@ -1,73 +1,58 @@
-const CACHE_NAME = 'masar-edu-v4.0';
-
-// نكتفي بتخزين الملفات المحلية الأساسية فقط لضمان نجاح التثبيت 100%
-const LOCAL_ASSETS = [
+const CACHE_NAME = 'masar-edu-v2'; // تحديث إصدار الكاش
+const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
-  './192.png',
-  './512.png'
+  './icon-192.png',
+  './icon-512.png',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+  'https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap'
 ];
 
-// تثبيت الـ Service Worker
-self.addEventListener('install', (event) => {
+// 1. تثبيت الـ Service Worker وحفظ الملفات في الكاش
+self.addEventListener('install', event => {
+  self.skipWaiting(); // تفعيل النسخة الجديدة فورًا
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      // استخدام Promise.allSettled لضمان عدم انهيار التثبيت لو فشل ملف واحد
-      return Promise.allSettled(
-        LOCAL_ASSETS.map(url => cache.add(url))
-      );
-    })
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
   );
-  self.skipWaiting();
 });
 
-// تفعيل وتنظيف الكاش القديم
-self.addEventListener('activate', (event) => {
+// 2. تنظيف ملفات الكاش القديمة عند تفعيل الإصدار الجديد
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map((cache) => {
+        cacheNames.map(cache => {
           if (cache !== CACHE_NAME) {
+            console.log('حذف الكاش القديم:', cache);
             return caches.delete(cache);
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// استراتيجية التعامل مع الطلبات الشبكية
-self.addEventListener('fetch', (event) => {
-  const request = event.request;
-
-  // التجاهل التام لطلبات Firebase أو أي طلبات ليست GET (مثل POST و PUT)
-  if (
-    request.method !== 'GET' ||
-    request.url.includes('firestore.googleapis.com') ||
-    request.url.includes('identitytoolkit.googleapis.com') ||
-    request.url.includes('securetoken.googleapis.com')
-  ) {
-    return;
-  }
-
-  // معالجة طلبات GET العادية
+// 3. استراتيجية الاستجابة: Prioritize Cached Responses (Cache-First)
+self.addEventListener('fetch', event => {
   event.respondWith(
-    fetch(request)
-      .then((response) => {
-        // تخزين الاستجابات الناجحة فقط (Status 200) ومن النوع العادي
-        if (response && response.status === 200 && response.type === 'basic') {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseClone);
-          });
+    caches.match(event.request)
+      .then(cachedResponse => {
+        if (cachedResponse) {
+          return cachedResponse; // إرجاع الملف من الكاش فورًا
         }
-        return response;
-      })
-      .catch(() => {
-        // عند انقطاع الإنترنت يتم استرجاع الملف من الـ Cache
-        return caches.match(request);
+        // في حال عدم وجوده، جلبه من الشبكة وحفظه مستقبليًا
+        return fetch(event.request).then(networkResponse => {
+          if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+            return networkResponse;
+          }
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseToCache);
+          });
+          return networkResponse;
+        });
       })
   );
 });
