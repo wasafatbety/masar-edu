@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- ربط ملف الـ Manifest للاختصار -->
+       <!-- ربط ملف الـ Manifest للاختصار -->
 <link rel="manifest" href="manifest.json">
 
 <!-- تخصيص شريط المتصفح والألوان -->
@@ -963,20 +963,14 @@
     </div>
 
     <script>
-        // فك تشفير البيانات الحساسة ديناميكياً أثناء التشغيل
-const _d = (s) => atob(s);
-
-const firebaseConfig = {
-    apiKey: _d("QUl6YVN5QUNEUUp6Q180WFJsQVNKdkthSzdaU3I3NDhwMFRVX19J"),
-    authDomain: _d("bWFzYXItZWR1LWNlbnRlci5maXJlYmFzZWFwcC5jb20="),
-    projectId: _d("bWFzYXItZWR1LWNlbnRlcg=="),
-    storageBucket: _d("bWFzYXItZWR1LWNlbnRlci5maXJlYmFzdG9yYWdlLmFwcA=="),
-    messagingSenderId: _d("NzE5MzY2ODQ2MDg4"),
-    appId: _d("MTo3MTkzNjY4NDYwODg6d2ViOjM5NDRmNzAwNTZkYjU5NWIyZTExM2Q=")
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+        const firebaseConfig = {
+            apiKey: "AIzaSyACDQJzC_4XRlASJvKaK7ZSr748p0TU__I",
+            authDomain: "masar-edu-center.firebaseapp.com",
+            projectId: "masar-edu-center",
+            storageBucket: "masar-edu-center.firebasestorage.app",
+            messagingSenderId: "719366846088",
+            appId: "1:719366846088:web:3944fd7056db595b2e113d"
+        };
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -2672,8 +2666,8 @@ const db = firebase.firestore();
 
         function shareApp() {
             toggleSidebar();
-            const webUrl = 'https://wasafatbety.github.io/masar-edu';
-            const downloadUrl = 'https://www.appcreator24.com/app4219416-krulo3';
+            const webUrl = 'https://wasafatbety.github.io/masar-app/';
+            const downloadUrl = 'https://www.appcreator24.com/app4201237-z4ija2';
             
             const shareText = 
 `🎓✨ *منظومة مسار التعليمية | Masar Edu* ✨🎓
@@ -2691,7 +2685,7 @@ ${webUrl}
 📥 *رابط تحميل التطبيق المباشر (APK):*
 ${downloadUrl}
 
-💡 شارك المنظومة للمشتركين فقط (الطلاب وأولياء الأمور) بالسنتر! ❤️`;
+💡 شارك المنظومة للمشتركين (الطلاب وأولياء الأمور) بالسنتر! ❤️`;
 
             const shareData = {
                 title: 'تطبيق مسار التعليمي لإدارة السناتر والقاعات والتحقق الذكي',
@@ -2745,32 +2739,37 @@ ${downloadUrl}
         e.preventDefault();
     });
 </script>
-   <script>
-    let deferredPrompt;
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        // منع ظهور النافذة الافتراضية المباشرة
+    <script>
+    window.addEventListener('contextmenu', function (e) {
         e.preventDefault();
-        deferredPrompt = e;
+        e.stopPropagation();
+        return false;
+    }, true);
 
-        // إظهار تنبيه للمستخدم لإضافة الاختصار
-        setTimeout(() => {
-            if (deferredPrompt) {
-                showCustomConfirm(
-                    "📱 إضافة اختصار للتطبيق",
-                    "هل ترغب في إضافة اختصار 'منظومة مسار' إلى الشاشة الرئيسية لهاتفك للوصول السريع؟",
-                    () => {
-                        deferredPrompt.prompt();
-                        deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === 'accepted') {
-                                console.log('تم إضافة الاختصار بنجاح');
-                            }
-                            deferredPrompt = null;
-                        });
-                    }
-                );
-            }
-        }, 3000); // يظهر بعد 3 ثوانٍ من فتح الصفحة
+    window.addEventListener('keydown', function (e) {
+        if (e.keyCode === 123) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.keyCode === 85) {
+            e.preventDefault();
+            return false;
+        }
+        if (e.ctrlKey && e.keyCode === 83) {
+            e.preventDefault();
+            return false;
+        }
+    }, true);
+
+    document.addEventListener('selectstart', function(e) {
+        e.preventDefault();
+    });
+    document.addEventListener('dragstart', function(e) {
+        e.preventDefault();
     });
 </script>
 </body>
