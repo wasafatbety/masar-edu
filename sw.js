@@ -1,30 +1,28 @@
-const CACHE_NAME = 'masar-edu-v3.9';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'masar-edu-v4.0';
+
+// نكتفي بتخزين الملفات المحلية الأساسية فقط لضمان نجاح التثبيت 100%
+const LOCAL_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './192.png',
-  './512.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-  'https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js',
-  'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js',
-  'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
-  'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js',
-  'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js'
+  './512.png'
 ];
 
-// تثبيت الـ Service Worker وتخزين الملفات أساسية
+// تثبيت الـ Service Worker
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      // استخدام Promise.allSettled لضمان عدم انهيار التثبيت لو فشل ملف واحد
+      return Promise.allSettled(
+        LOCAL_ASSETS.map(url => cache.add(url))
+      );
     })
   );
   self.skipWaiting();
 });
 
-// تفعيل وتحديث الذاكرة المؤقتة (حذف الكاش القديم)
+// تفعيل وتنظيف الكاش القديم
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -40,17 +38,36 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// استراتيجية Network First مع الرجوع للتخزين المحلي (Cache Fallback)
+// استراتيجية التعامل مع الطلبات الشبكية
 self.addEventListener('fetch', (event) => {
+  const request = event.request;
+
+  // التجاهل التام لطلبات Firebase أو أي طلبات ليست GET (مثل POST و PUT)
+  if (
+    request.method !== 'GET' ||
+    request.url.includes('firestore.googleapis.com') ||
+    request.url.includes('identitytoolkit.googleapis.com') ||
+    request.url.includes('securetoken.googleapis.com')
+  ) {
+    return;
+  }
+
+  // معالجة طلبات GET العادية
   event.respondWith(
-    fetch(event.request)
+    fetch(request)
       .then((response) => {
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
+        // تخزين الاستجابات الناجحة فقط (Status 200) ومن النوع العادي
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseClone);
+          });
+        }
         return response;
       })
-      .catch(() => caches.match(event.request))
+      .catch(() => {
+        // عند انقطاع الإنترنت يتم استرجاع الملف من الـ Cache
+        return caches.match(request);
+      })
   );
 });
