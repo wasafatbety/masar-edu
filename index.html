@@ -2790,5 +2790,49 @@ ${downloadUrl}
             if (banner) banner.style.display = 'none';
         }
     </script>
+    <!-- نافذة تثبيت التطبيق البارزة -->
+    <div id="pwaInstallModal" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 420px; background: #1e293b; border: 2px solid #2563eb; border-radius: 16px; padding: 16px; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.8); text-align: center;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px; text-align: right;">
+            <img src="./icon-192.png" alt="App Icon" style="width: 48px; height: 48px; border-radius: 10px;">
+            <div>
+                <h4 style="color: #fff; margin: 0; font-size: 1rem;">تثبيت مسار التعليمي</h4>
+                <p style="color: #94a3b8; margin: 2px 0 0 0; font-size: 0.78rem;">أضف التطبيق للشاشة الرئيسية للوصول السريع</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button id="btnDoInstall" class="btn-submit" style="padding: 10px; font-size: 0.85rem; flex: 1; background: linear-gradient(135deg, #2563eb, #1d4ed8);">تثبيت الآن</button>
+            <button onclick="document.getElementById('pwaInstallModal').style.display='none'" class="btn-submit" style="padding: 10px; font-size: 0.85rem; width: 70px; background: rgba(255,255,255,0.1);">إلغاء</button>
+        </div>
+    </div>
+
+    <!-- كود تسجيل الـ Service Worker ومعالجة التثبيت -->
+    <script>
+        // 1. تسجيل الـ Service Worker (إجباري لتفعيل PWA)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js', { scope: './' })
+                    .then(reg => console.log('✅ Service Worker Registered:', reg))
+                    .catch(err => console.error('❌ SW Registration Failed:', err));
+            });
+        }
+
+        // 2. التقاط حدث جاهزية التثبيت واستدعاء النافذة
+        let deferredInstallPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            document.getElementById('pwaInstallModal').style.display = 'block';
+        });
+
+        document.getElementById('btnDoInstall')?.addEventListener('click', async () => {
+            if (deferredInstallPrompt) {
+                deferredInstallPrompt.prompt();
+                const { outcome } = await deferredInstallPrompt.userChoice;
+                console.log('Install outcome:', outcome);
+                deferredInstallPrompt = null;
+                document.getElementById('pwaInstallModal').style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
