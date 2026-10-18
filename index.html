@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-       <!-- ربط ملف الـ Manifest للاختصار -->
-<link rel="manifest" href="manifest.json">
-
-<!-- تخصيص شريط المتصفح والألوان -->
-<meta name="theme-color" content="#0f172a">
-<meta name="mobile-web-app-capable" content="yes">
-
-<!-- تخصيص أجهزة أبل iOS (آيفون وآيباد) -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="مسار">
-<link rel="apple-touch-icon" href="192.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>مسار التعليمي | Masar Edu - المنظومة الذكية لإدارة القاعات والسناتر</title>
+       <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="مسار التعليمي">
+    <link rel="apple-touch-icon" href="./icon-192.png">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -2739,38 +2735,60 @@ ${downloadUrl}
         e.preventDefault();
     });
 </script>
+       <!-- INSTALL PWA BANNER -->
+    <div id="pwaInstallBanner" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(12px); border: 1px solid var(--primary); border-radius: 18px; padding: 16px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.6); text-align: center;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <img src="./icon-192.png" alt="Logo" style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover;">
+            <div style="text-align: right; flex: 1;">
+                <h4 style="font-size: 0.95rem; color: #fff; margin: 0;">تثبيت تطبيق مسار التعليمي</h4>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 2px 0 0 0;">قم بإضافة التطبيق على شاشتك الرئيسية للوصول السريع</p>
+            </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button id="btnPwaInstall" class="btn-submit" style="padding: 10px; font-size: 0.85rem; flex: 1; background: linear-gradient(135deg, var(--primary), var(--primary-dark));">
+                <i class="fa-solid fa-download"></i> تثبيت الآن
+            </button>
+            <button onclick="dismissPwaBanner()" class="btn-submit" style="padding: 10px; font-size: 0.85rem; width: 80px; background: rgba(255,255,255,0.1);">
+                إلغاء
+            </button>
+        </div>
+    </div>
+
+    <!-- REGISTER SERVICE WORKER & PWA LOGIC -->
     <script>
-    window.addEventListener('contextmenu', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-    }, true);
+        let deferredPrompt;
 
-    window.addEventListener('keydown', function (e) {
-        if (e.keyCode === 123) {
-            e.preventDefault();
-            return false;
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW Registered!', reg))
+                    .catch(err => console.error('SW Registration Failed!', err));
+            });
         }
-        if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
-            e.preventDefault();
-            return false;
-        }
-        if (e.ctrlKey && e.keyCode === 85) {
-            e.preventDefault();
-            return false;
-        }
-        if (e.ctrlKey && e.keyCode === 83) {
-            e.preventDefault();
-            return false;
-        }
-    }, true);
 
-    document.addEventListener('selectstart', function(e) {
-        e.preventDefault();
-    });
-    document.addEventListener('dragstart', function(e) {
-        e.preventDefault();
-    });
-</script>
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) banner.style.display = 'block';
+        });
+
+        document.getElementById('btnPwaInstall')?.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+                dismissPwaBanner();
+            }
+        });
+
+        function dismissPwaBanner() {
+            const banner = document.getElementById('pwaInstallBanner');
+            if (banner) banner.style.display = 'none';
+        }
+    </script>
 </body>
 </html>
