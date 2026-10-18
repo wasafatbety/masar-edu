@@ -2806,33 +2806,31 @@ ${downloadUrl}
     </div>
 
     <!-- كود تسجيل الـ Service Worker ومعالجة التثبيت -->
-    <script>
-        // 1. تسجيل الـ Service Worker (إجباري لتفعيل PWA)
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js', { scope: './' })
-                    .then(reg => console.log('✅ Service Worker Registered:', reg))
-                    .catch(err => console.error('❌ SW Registration Failed:', err));
-            });
+     </script>
+    <!-- زر تثبيت اختياري يظهر فقط عند استيفاء شروط المتصفح -->
+<button id="installApp" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; padding: 12px 20px; font-size: 0.9rem; font-weight: bold; font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); cursor: pointer;">
+  📲 تثبيت تطبيق masar Edu system على الشاشة
+</button>
+<script>
+  let deferredPrompt;
+  const installBtn = document.getElementById('installApp');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
+
+    installBtn.addEventListener('click', () => {
+      installBtn.style.display = 'none';
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the install prompt');
         }
-
-        // 2. التقاط حدث جاهزية التثبيت واستدعاء النافذة
-        let deferredInstallPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredInstallPrompt = e;
-            document.getElementById('pwaInstallModal').style.display = 'block';
-        });
-
-        document.getElementById('btnDoInstall')?.addEventListener('click', async () => {
-            if (deferredInstallPrompt) {
-                deferredInstallPrompt.prompt();
-                const { outcome } = await deferredInstallPrompt.userChoice;
-                console.log('Install outcome:', outcome);
-                deferredInstallPrompt = null;
-                document.getElementById('pwaInstallModal').style.display = 'none';
-            }
-        });
-    </script>
+        deferredPrompt = null;
+      });
+    });
+  });
+</script>
 </body>
 </html>
