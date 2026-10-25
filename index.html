@@ -2,22 +2,22 @@
 <html lang="ar" dir="rtl">
 <head>
   <!-- ربط ملف الـ Manifest -->
-<link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json">
 
-<!-- تحديد لون شريط العنوان وشعار آيفون/iOS -->
-<meta name="theme-color" content="#ffffff">
-<link rel="apple-touch-icon" href="icon-192.png">
+  <!-- تحديد لون شريط العنوان وشعار آيفون/iOS -->
+  <meta name="theme-color" content="#ffffff">
+  <link rel="apple-touch-icon" href="icon-192.png">
 
-<!-- تسجيل الـ Service Worker -->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('Service Worker Registered'))
-        .catch(err => console.error('Service Worker Error:', err));
-    });
-  }
-</script>
+  <!-- تسجيل الـ Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker Registered'))
+          .catch(err => console.error('Service Worker Error:', err));
+      });
+    }
+  </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -393,7 +393,7 @@
                     </defs>
                 </svg>
                 <div class="brand-text">
-                    <h1>مسار إديو | Masar Edu</h1>
+                    <h1> Masar Edu system</h1>
                     <p id="currentPageTitle">اختيار الواجهة</p>
                 </div>
             </div>
@@ -519,6 +519,10 @@
                 <div id="studentDueNoticeBanner"></div>
                 <h2 id="studentCardName" style="font-size: 1.3rem; color: #ffffff;">---</h2>
                 <p id="studentCardId" style="font-size: 0.85rem; color: var(--text-muted);">---</p>
+                
+                <!-- عرض تفاصيل الحقل والمستوى في كارت الطالب -->
+                <div id="studentAcademicBadge" style="margin: 6px 0; font-size: 0.8rem; color: var(--warning);"></div>
+
                 <div style="margin: 10px 0;">
                     <span id="studentCardStatus" style="padding: 4px 12px; border-radius: 12px; font-weight: bold; font-size: 0.8rem;">---</span>
                 </div>
@@ -583,7 +587,7 @@
                 </div>
 
                 <div class="glass-card">
-                    <h3 style="margin-bottom: 12px; font-size: 1.05rem; color: var(--success);"><i class="fa-solid fa-file-invoice-dollar"></i> الموقف المالي لأبنائك المسجلين</h3>
+                    <h3 style="margin-bottom: 12px; font-size: 1.05rem; color: var(--success);"><i class="fa-solid fa-file-invoice-dollar"></i> الموقف المالي والأكاديمي لأبنائك المسجلين</h3>
                     <div id="parentChildrenFinancials"></div>
                 </div>
 
@@ -851,9 +855,10 @@
                     </div>
                 </div>
 
+                <!-- نموذج إضافة الطالب: تزويده بالحقول التعليمية والمستويات ومراقبة السلوك -->
                 <div class="collapsible-card">
                     <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3 style="color: var(--primary);"><i class="fa-solid fa-user-plus"></i> إضافة / تجديد اشتراك وملف مالي لطالب</h3>
+                        <h3 style="color: var(--primary);"><i class="fa-solid fa-user-plus"></i> إضافة / تجديد اشتراك وملف أكاديمي ومالي لطالب</h3>
                         <i class="fa-solid fa-chevron-down collapsible-icon"></i>
                     </div>
                     <div class="collapsible-content">
@@ -862,6 +867,56 @@
                         <div class="form-group"><label>بريد ولي الأمر (للتأمين والحسابات)</label><input type="email" id="newParentEmail" class="input-box" placeholder="parent@example.com"></div>
                         <div class="form-group"><label>رقم هاتف ولي الأمر (للتنبيه الآلي)</label><input type="tel" id="newParentPhone" class="input-box" placeholder="مثال: 01012345678"></div>
                         
+                        <!-- الحقول التعليمية والمستويات والمراقبة 🟢 -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="form-group">
+                                <label>المرحلة / الحقل التعليمي</label>
+                                <select id="newStudentStage" class="input-box" style="background: #1e1b4b;" onchange="updateGradeOptions('newStudentStage', 'newStudentGrade')">
+                                    <option value="الابتدائية">الابتدائية 🏫</option>
+                                    <option value="الإعدادية">الإعدادية 📚</option>
+                                    <option value="الثانوية العامة">الثانوية العامة 🎓</option>
+                                    <option value="التعليم الفني/التطبيقي">التعليم الفني/التطبيقي 🛠️</option>
+                                    <option value="الجامعي/الأكاديمي">الجامعي/الأكاديمي 🏛️</option>
+                                    <option value="اللغات/الجامعات الدولية">اللغات/دولية 🌐</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>الصف / المستوى الدراسي</label>
+                                <select id="newStudentGrade" class="input-box" style="background: #1e1b4b;">
+                                    <option value="الصف الأول">الصف الأول</option>
+                                    <option value="الصف الثاني">الصف الثاني</option>
+                                    <option value="الصف الثالث">الصف الثالث</option>
+                                    <option value="الصف الرابع">الصف الرابع</option>
+                                    <option value="الصف الخامس">الصف الخامس</option>
+                                    <option value="الصف السادس">الصف السادس</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div class="form-group">
+                                <label>الشعبة / التخصص</label>
+                                <select id="newStudentTrack" class="input-box" style="background: #1e1b4b;">
+                                    <option value="عام / رئيسي">عام / رئيسي</option>
+                                    <option value="علمي علوم">علمي علوم</option>
+                                    <option value="علمي رياضة">علمي رياضة</option>
+                                    <option value="أدبي">أدبي</option>
+                                    <option value="تكنولوجيا / حاسبات">تكنولوجيا / حاسبات</option>
+                                    <option value="هندسي / صناعي">هندسي / صناعي</option>
+                                    <option value="تجاري / أعمال">تجاري / أعمال</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>حالة ومراقبة السلوك الأكاديمي</label>
+                                <select id="newStudentBehavior" class="input-box" style="background: #1e1b4b;">
+                                    <option value="ممتاز 🟢">ممتاز 🟢</option>
+                                    <option value="جيد جداً 🔵">جيد جداً 🔵</option>
+                                    <option value="مقبول / تحت المراقبة 🟡">مقبول / تحت المراقبة 🟡</option>
+                                    <option value="انذار سلوكي/إنضباطي 🔴">انذار سلوكي/إنضباطي 🔴</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             <div class="form-group"><label>إجمالي قيمة الاشتراك (ج.م)</label><input type="number" id="newFeeTotal" class="input-box" placeholder="1000"></div>
                             <div class="form-group"><label>المبلغ المدفوع (ج.م)</label><input type="number" id="newFeePaid" class="input-box" placeholder="500"></div>
@@ -879,7 +934,7 @@
                                 <option value="موقف">موقف / غير مفعل</option>
                             </select>
                         </div>
-                        <button class="btn-submit" onclick="addNewStudent()">حفظ البيانات والملف المالي للترم النشط</button>
+                        <button class="btn-submit" onclick="addNewStudent()">حفظ البيانات والملف المالي والتعليمي للترم النشط</button>
                     </div>
                 </div>
 
@@ -898,7 +953,7 @@
 
                 <div class="collapsible-card">
                     <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3 style="color: var(--primary);"><i class="fa-solid fa-file-export"></i> خيارات التقارير والسجلات المالية</h3>
+                        <h3 style="color: var(--primary);"><i class="fa-solid fa-file-export"></i> خيارات التقارير والسجلات المالية والتعليمية</h3>
                         <i class="fa-solid fa-chevron-down collapsible-icon"></i>
                     </div>
                     <div class="collapsible-content">
@@ -928,7 +983,7 @@
 
                 <div class="collapsible-card active">
                     <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                        <h3 style="color: var(--primary);"><i class="fa-solid fa-users"></i> إدارة كافة الطلاب والملف المالي</h3>
+                        <h3 style="color: var(--primary);"><i class="fa-solid fa-users"></i> إدارة كافة الطلاب والملف المالي والأكاديمي</h3>
                         <i class="fa-solid fa-chevron-down collapsible-icon"></i>
                     </div>
                     <div class="collapsible-content">
@@ -968,7 +1023,7 @@
     <div id="editStudentModal" class="modal-overlay">
         <div class="modal-body">
             <h3 style="color: white; font-size: 1.15rem; margin-bottom: 15px; text-align: center;">
-                <i class="fa-solid fa-user-pen" style="color:var(--primary);"></i> تعديل بيانات الطالب
+                <i class="fa-solid fa-user-pen" style="color:var(--primary);"></i> تعديل بيانات وتخصصات الطالب
             </h3>
             
             <input type="hidden" id="editOriginalStudentId">
@@ -991,6 +1046,53 @@
             <div class="form-group">
                 <label>رقم هاتف ولي الأمر</label>
                 <input type="tel" id="editParentPhone" class="input-box">
+            </div>
+
+            <!-- الحقول التعليمية في مودال التعديل 🟢 -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                    <label>المرحلة / الحقل التعليمي</label>
+                    <select id="editStudentStage" class="input-box" style="background:#1e1b4b;" onchange="updateGradeOptions('editStudentStage', 'editStudentGrade')">
+                        <option value="الابتدائية">الابتدائية 🏫</option>
+                        <option value="الإعدادية">الإعدادية 📚</option>
+                        <option value="الثانوية العامة">الثانوية العامة 🎓</option>
+                        <option value="التعليم الفني/التطبيقي">التعليم الفني/التطبيقي 🛠️</option>
+                        <option value="الجامعي/الأكاديمي">الجامعي/الأكاديمي 🏛️</option>
+                        <option value="اللغات/الجامعات الدولية">اللغات/دولية 🌐</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>الصف / المستوى الدراسي</label>
+                    <select id="editStudentGrade" class="input-box" style="background:#1e1b4b;">
+                        <option value="الصف الأول">الصف الأول</option>
+                        <option value="الصف الثاني">الصف الثاني</option>
+                        <option value="الصف الثالث">الصف الثالث</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group">
+                    <label>الشعبة / التخصص</label>
+                    <select id="editStudentTrack" class="input-box" style="background:#1e1b4b;">
+                        <option value="عام / رئيسي">عام / رئيسي</option>
+                        <option value="علمي علوم">علمي علوم</option>
+                        <option value="علمي رياضة">علمي رياضة</option>
+                        <option value="أدبي">أدبي</option>
+                        <option value="تكنولوجيا / حاسبات">تكنولوجيا / حاسبات</option>
+                        <option value="هندسي / صناعي">هندسي / صناعي</option>
+                        <option value="تجاري / أعمال">تجاري / أعمال</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>المراقبة والسلوك الأكاديمي</label>
+                    <select id="editStudentBehavior" class="input-box" style="background:#1e1b4b;">
+                        <option value="ممتاز 🟢">ممتاز 🟢</option>
+                        <option value="جيد جداً 🔵">جيد جداً 🔵</option>
+                        <option value="مقبول / تحت المراقبة 🟡">مقبول / تحت المراقبة 🟡</option>
+                        <option value="انذار سلوكي/إنضباطي 🔴">انذار سلوكي/إنضباطي 🔴</option>
+                    </select>
+                </div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
@@ -1123,6 +1225,31 @@
         let isProcessingScan = false; 
         let lastScannedStudentId = "";
         let lastScanTimestamp = 0;
+
+        // دالة ديناميكية لتحديث الصفوف الدراسية حسب الحقل/المرحلة التعليمية المختارة
+        function updateGradeOptions(stageSelectId, gradeSelectId) {
+            const stage = document.getElementById(stageSelectId).value;
+            const gradeSelect = document.getElementById(gradeSelectId);
+            gradeSelect.innerHTML = '';
+
+            let options = [];
+            if (stage === 'الابتدائية') {
+                options = ['الصف الأول', 'الصف الثاني', 'الصف الثالث', 'الصف الرابع', 'الصف الخامس', 'الصف السادس'];
+            } else if (stage === 'الإعدادية' || stage === 'الثانوية العامة') {
+                options = ['الصف الأول', 'الصف الثاني', 'الصف الثالث'];
+            } else if (stage === 'التعليم الفني/التطبيقي') {
+                options = ['الصف الأول (نظام 3 سنوات)', 'الصف الثاني', 'الصف الثالث', 'الصف الرابع (نظام 5 سنوات)', 'الصف الخامس'];
+            } else if (stage === 'الجامعي/الأكاديمي' || stage === 'اللغات/الجامعات الدولية') {
+                options = ['المستوى الأول (Freshman)', 'المستوى الثاني (Sophomore)', 'المستوى الثالث (Junior)', 'المستوى الرابع (Senior)', 'الدراسات العليا/ماجستير'];
+            }
+
+            options.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt;
+                el.innerText = opt;
+                gradeSelect.appendChild(el);
+            });
+        }
 
         function updateAdminReportDate() {
             const selected = document.getElementById('adminReportDate').value;
@@ -1662,6 +1789,8 @@
                         card.className = 'financial-card';
                         card.innerHTML = `
                             <h4 style="color:var(--warning); margin-bottom:8px;">الطالب: ${st.name} (${docSnap.id}) - <span style="color:white">${st.semester || 'الترم الأول'}</span></h4>
+                            <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:6px;">المرحلة: <strong style="color:white;">${st.stage || 'الابتدائية'}</strong> | الصف: <strong style="color:white;">${st.grade || 'الصف الأول'}</strong> | الشعبة: <strong style="color:white;">${st.track || 'عام'}</strong></p>
+                            <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:8px;">السلوك والمراقبة الأكاديمية: <strong style="color:var(--warning);">${st.behavior || 'ممتاز 🟢'}</strong></p>
                             <div class="fin-row"><span>إجمالي الاشتراك:</span><strong>${total} ج.م</strong></div>
                             <div class="fin-row"><span>الخصم الممنوح:</span><strong>${discount} ج.م</strong></div>
                             <div class="fin-row"><span>المبلغ المطلوب:</span><strong style="color:var(--warning)">${required} ج.م</strong></div>
@@ -1787,6 +1916,17 @@
             document.getElementById('studentCardName').innerText = data.name;
             document.getElementById('studentCardId').innerText = `ID: ${inputId} (${data.semester || "الترم الأول"})`;
             
+            // عرض تفاصيل المسار التعليمي في كارت الباركود الخاص بالمستخدم
+            const stStage = data.stage || 'الابتدائية';
+            const stGrade = data.grade || 'الصف الأول';
+            const stTrack = data.track || 'عام';
+            const stBehav = data.behavior || 'ممتاز 🟢';
+
+            const academicBadge = document.getElementById('studentAcademicBadge');
+            if (academicBadge) {
+                academicBadge.innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${stStage} - ${stGrade} (${stTrack}) <br><span style="font-size:0.75rem; color:var(--text-muted);">السلوك والمراقبة: ${stBehav}</span>`;
+            }
+
             const total = Number(data.feeTotal) || 0;
             const paid = Number(data.feePaid) || 0;
             const discount = Number(data.feeDiscount) || 0;
@@ -1979,7 +2119,7 @@
                         resultCard.className = 'result-card success';
                         resultIcon.innerHTML = '<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>';
                         resultTitle.innerText = data.name;
-                        resultDetail.innerText = `الكود: ${cleanId} | تسجيل القاعة/المجموعة رقم: ${currentBusNumber || "عام"}\n(${tripDirection})`;
+                        resultDetail.innerText = `الكود: ${cleanId} | ${data.stage||"الابتدائية"} - ${data.grade||"الصف الأول"} (${data.track||"عام"})\nقاعة: ${currentBusNumber || "عام"} | (${tripDirection})`;
                         resultBadge.style.background = '#10b981';
                         resultBadge.innerText = `اشتراك مفعل - تم تسجيل الحضور وإرسال الإشعار آلياً`;
 
@@ -1993,6 +2133,9 @@
                             tripDirection: tripDirection,
                             tripType: "حضور 🏫",
                             semester: currentSemester,
+                            stage: data.stage || "الابتدائية",
+                            grade: data.grade || "الصف الأول",
+                            track: data.track || "عام",
                             timeString: timeStr,
                             dateString: todayStr,
                             rawTime: nowMs,
@@ -2074,7 +2217,7 @@
                         item.className = 'log-item';
                         item.innerHTML = `
                             <div class="log-info">
-                                <h4>${log.studentName} (${log.studentId})</h4>
+                                <h4>${log.studentName} (${log.studentId}) - <span style="font-size:0.75rem; color:var(--warning);">${log.stage||""} ${log.grade||""}</span></h4>
                                 <p><i class="fa-regular fa-clock"></i> ${log.timeString} | القاعة: <strong style="color:var(--warning)">${log.busNumber}</strong> | ${log.tripDirection || ""}</p>
                             </div>
                             <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 1.2rem;"></i>
@@ -2089,17 +2232,17 @@
                 return showCustomAlert("تنبيه", `لا توجد سجلات طلاب لقاعة رقم (${currentBusNumber}) لتصديرها!`, 'warning');
             }
 
-            const headerTitle = "منظومة مسار إديو - تقرير حضور القاعة/المجموعة";
+            const headerTitle = "منظومة مسار إديو - تقرير حضور القاعة/المجموعة الأكاديمي";
             const datePrinted = new Date().toLocaleString('ar-EG');
             
             let text = `${headerTitle}\n`;
             text += `رقم القاعة:\t${currentBusNumber}\tتاريخ التقرير:\t${currentDriverReportDate}\tوقت الطباعة:\t${datePrinted}\n`;
             text += `إجمالي الطلاب:\t${driverAttendanceCache.length} طالب\n\n`;
 
-            text += "كود الطالب\tاسم الطالب\tرقم هاتف ولي الأمر\tرقم القاعة\tنوع الحضور\tوقت التسجيل\tالتاريخ\n";
+            text += "كود الطالب\tاسم الطالب\tالمرحلة\tالصف\tرقم هاتف ولي الأمر\tرقم القاعة\tنوع الحضور\tوقت التسجيل\tالتاريخ\n";
             
             driverAttendanceCache.forEach(row => {
-                text += `${row.studentId}\t${row.studentName}\t${row.parentPhone || "غير مسجل"}\t${row.busNumber}\t${row.tripDirection || ""}\t${row.timeString}\t${row.dateString}\n`;
+                text += `${row.studentId}\t${row.studentName}\t${row.stage||"غير محدد"}\t${row.grade||"غير محدد"}\t${row.parentPhone || "غير مسجل"}\t${row.busNumber}\t${row.tripDirection || ""}\t${row.timeString}\t${row.dateString}\n`;
             });
 
             document.getElementById('modalTitle').innerText = `تقرير طلاب قاعة رقم (${currentBusNumber}) - ${currentDriverReportDate}`;
@@ -2158,31 +2301,59 @@
             }
         }
 
-        async function createNewAdminFromPanel() {
-            const email = document.getElementById('newAdminEmailInput').value.trim();
-            const pass = document.getElementById('newAdminPassInput').value.trim();
+       async function createNewAdminFromPanel() {
+    const email = document.getElementById('newAdminEmailInput').value.trim();
+    const pass = document.getElementById('newAdminPassInput').value.trim();
 
-            if (!email || !pass) {
-                return showCustomAlert("تنبيه", "يرجى كتابة البريد الإلكتروني وكلمة المرور!", 'warning');
-            }
+    if (!email || !pass) {
+        return showCustomAlert("تنبيه", "يرجى كتابة البريد الإلكتروني وكلمة المرور!", 'warning');
+    }
 
-            if (pass.length < 6) {
-                return showCustomAlert("كلمة مرور ضعيفة", "يجب أن تكون كلمة المرور 6 أحرف أو أرقام على الأقل!", 'warning');
-            }
+    if (pass.length < 6) {
+        return showCustomAlert("كلمة مرور ضعيفة", "يجب أن تكون كلمة المرور 6 أحرف أو أرقام على الأقل!", 'warning');
+    }
 
-            try {
-                const addAdminRole = functions.httpsCallable('addAdminRole');
-                const result = await addAdminRole({ email: email, pass: pass });
-
-                document.getElementById('newAdminEmailInput').value = '';
-                document.getElementById('newAdminPassInput').value = '';
-
-                showCustomAlert("تم إنشاء وتأمين الأدمن", result.data.message, "success");
-            } catch (err) {
-                showCustomAlert("خطأ في الإنشاء", err.message || "حدث خطأ أثناء إضافة حساب الأدمن!", 'error');
-            }
+    try {
+        // 1. إنشاء تطبيق فرعي مؤقت لإنشاء حساب Auth دون تسجيل خروج الأدمن الحالي
+        let secondaryApp;
+        if (!firebase.apps.some(app => app.name === "SecondaryApp")) {
+            secondaryApp = firebase.initializeApp(firebaseConfig, "SecondaryApp");
+        } else {
+            secondaryApp = firebase.app("SecondaryApp");
         }
 
+        // 2. إنشاء المستخدم في Firebase Auth عبر التطبيق الفرعي
+        const userCredential = await secondaryApp.auth().createUserWithEmailAndPassword(email, pass);
+        const newAdminUser = userCredential.user;
+
+        // 3. كتابة مستند الأدمن بواسطة الأدمن الحالي (db الرئيسي) لأنه يملك صلاحية isAdmin()
+        await db.collection("admins").doc(newAdminUser.uid).set({
+            email: email,
+            role: "admin",
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // 4. تسجيل خروج التطبيق الفرعي فوراً
+        await secondaryApp.auth().signOut();
+
+        document.getElementById('newAdminEmailInput').value = '';
+        document.getElementById('newAdminPassInput').value = '';
+
+        showCustomAlert("تم إضافة الأدمن بنجاح", `تم إنشاء وتأمين حساب الأدمن الجديد (${email}) بنجاح!`, "success");
+
+    } catch (err) {
+        console.error(err);
+        let errorMsg = "حدث خطأ أثناء إضافة حساب الأدمن!";
+        if (err.code === 'auth/email-already-in-use') {
+            errorMsg = "هذا البريد الإلكتروني مُسجل بالفعل بحساب آخر!";
+        } else if (err.code === 'auth/invalid-email') {
+            errorMsg = "صيغة البريد الإلكتروني غير صحيحة!";
+        } else if (err.code === 'permission-denied') {
+            errorMsg = "تم رفض العملية! تأكد من أن حسابك الحالي يملك صلاحية الأدمن.";
+        }
+        showCustomAlert("خطأ في الإنشاء", errorMsg, 'error');
+    }
+} 
         async function changeAdminPassword() {
             const oldPass = document.getElementById('oldAdminPassInput').value.trim();
             const newPass = document.getElementById('changeAdminNewPassInput').value.trim();
@@ -2319,11 +2490,11 @@
                 const datePrinted = new Date().toLocaleString('ar-EG');
                 let text = `منظومة مسار إديو - تقرير قاعة/مجموعة منفصل\n`;
                 text += `رقم القاعة:\t${busNum}\tتاريخ التقرير:\t${currentAdminReportDate}\tتاريخ الاستخراج:\t${datePrinted}\n\n`;
-                text += "كود الطالب\tاسم الطالب\tرقم هاتف ولي الأمر\tرقم القاعة\tنوع الحضور\tوقت التسجيل\tالتاريخ\n";
+                text += "كود الطالب\tاسم الطالب\tالمرحلة\tالصف\tرقم هاتف ولي الأمر\tرقم القاعة\tنوع الحضور\tوقت التسجيل\tالتاريخ\n";
 
                 snapshot.forEach(docSnap => {
                     const row = docSnap.data();
-                    text += `${row.studentId}\t${row.studentName}\t${row.parentPhone || "غير مسجل"}\t${row.busNumber}\t${row.tripDirection || ""}\t${row.timeString}\t${row.dateString}\n`;
+                    text += `${row.studentId}\t${row.studentName}\t${row.stage||"الابتدائية"}\t${row.grade||"الصف الأول"}\t${row.parentPhone || "غير مسجل"}\t${row.busNumber}\t${row.tripDirection || ""}\t${row.timeString}\t${row.dateString}\n`;
                 });
 
                 document.getElementById('modalTitle').innerText = `تقرير قاعة رقم (${busNum}) - تاريخ: ${currentAdminReportDate}`;
@@ -2434,6 +2605,9 @@
                         <div class="student-info">
                             <h4>${data.name} <span style="font-size:0.7rem; color:var(--warning)">(${data.semester || "الترم الأول"})</span></h4>
                             <p>ID: ${data.id} | بريد ولي الأمر: ${data.parentEmail || "غير مسجل"} | هاتف ولي الأمر: ${data.parentPhone || "غير مسجل"}</p>
+                            <p style="color:var(--text-muted); font-size:0.75rem; margin-top:2px;">
+                                <i class="fa-solid fa-graduation-cap"></i> ${data.stage||"الابتدائية"} - ${data.grade||"الصف الأول"} | الشعبة: ${data.track||"عام"} | السلوك: <strong style="color:var(--warning);">${data.behavior||"ممتاز 🟢"}</strong>
+                            </p>
                         </div>
                         <span style="font-size:0.75rem; padding: 2px 8px; border-radius:6px; background:${data.status === 'مفعل' ? 'var(--success)' : 'var(--danger)'}; color:white">${data.status || 'مفعل'}</span>
                     </div>
@@ -2467,6 +2641,15 @@
             document.getElementById('editStudentName').value = student.name || '';
             document.getElementById('editParentEmail').value = student.parentEmail || '';
             document.getElementById('editParentPhone').value = student.parentPhone || '';
+            
+            // تعبئة الحقول التعليمية في مودال التعديل
+            const stage = student.stage || 'الابتدائية';
+            document.getElementById('editStudentStage').value = stage;
+            updateGradeOptions('editStudentStage', 'editStudentGrade');
+            document.getElementById('editStudentGrade').value = student.grade || 'الصف الأول';
+            document.getElementById('editStudentTrack').value = student.track || 'عام / رئيسي';
+            document.getElementById('editStudentBehavior').value = student.behavior || 'ممتاز 🟢';
+
             document.getElementById('editFeeTotal').value = student.feeTotal || 0;
             document.getElementById('editFeePaid').value = student.feePaid || 0;
             document.getElementById('editFeeDiscount').value = student.feeDiscount || 0;
@@ -2486,6 +2669,13 @@
             const newName = document.getElementById('editStudentName').value.trim();
             const newParentEmail = document.getElementById('editParentEmail').value.trim();
             const newParentPhone = document.getElementById('editParentPhone').value.trim();
+            
+            // قراءة قيم الحقول التعليمية المحدثة
+            const newStage = document.getElementById('editStudentStage').value;
+            const newGrade = document.getElementById('editStudentGrade').value;
+            const newTrack = document.getElementById('editStudentTrack').value;
+            const newBehavior = document.getElementById('editStudentBehavior').value;
+
             const newFeeTotal = Number(document.getElementById('editFeeTotal').value) || 0;
             const newFeePaid = Number(document.getElementById('editFeePaid').value) || 0;
             const newFeeDiscount = Number(document.getElementById('editFeeDiscount').value) || 0;
@@ -2511,6 +2701,10 @@
                         name: newName,
                         parentEmail: newParentEmail,
                         parentPhone: newParentPhone,
+                        stage: newStage,
+                        grade: newGrade,
+                        track: newTrack,
+                        behavior: newBehavior,
                         feeTotal: newFeeTotal,
                         feePaid: newFeePaid,
                         feeDiscount: newFeeDiscount,
@@ -2524,6 +2718,10 @@
                         name: newName,
                         parentEmail: newParentEmail,
                         parentPhone: newParentPhone,
+                        stage: newStage,
+                        grade: newGrade,
+                        track: newTrack,
+                        behavior: newBehavior,
                         feeTotal: newFeeTotal,
                         feePaid: newFeePaid,
                         feeDiscount: newFeeDiscount,
@@ -2533,7 +2731,7 @@
                 }
 
                 closeEditStudentModal();
-                showCustomAlert("نجاح التعديل", "تم حفظ وتحديث كافة بيانات الطالب بنجاح!", 'success');
+                showCustomAlert("نجاح التعديل", "تم حفظ وتحديث كافة بيانات الطالب الأكاديمية والمالية بنجاح!", 'success');
 
             } catch (e) {
                 showCustomAlert("خطأ", "حدث خطأ أثناء حفظ التعديلات بالسيرفر!", 'error');
@@ -2619,6 +2817,7 @@
                         <span style="background:var(--primary); color:white; padding:2px 8px; border-radius:8px; font-size:0.75rem;">${st.semester || "الترم الأول"}</span>
                     </div>
                     <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">الكود (ID): <strong style="color:white;">${st.id}</strong> | بريد ولي الأمر: <strong style="color:white;">${st.parentEmail || "غير مسجل"}</strong> | هاتف ولي الأمر: <strong style="color:white;">${st.parentPhone || "غير مسجل"}</strong></p>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">المرحلة: <strong style="color:white;">${st.stage || "الابتدائية"}</strong> | الصف: <strong style="color:white;">${st.grade || "الصف الأول"}</strong> | الشعبة: <strong style="color:white;">${st.track || "عام"}</strong> | السلوك: <strong style="color:var(--warning);">${st.behavior || "ممتاز 🟢"}</strong></p>
                     <div class="fin-row"><span>حالة الاشتراك:</span><strong id="status_txt_search_${st.id}" style="color:${st.status==='مفعل'?'var(--success)':'var(--danger)'}">${st.status || 'مفعل'}</strong></div>
                     <div class="fin-row"><span>إجمالي قيمة الاشتراك:</span><strong>${tot} ج.م</strong></div>
                     <div class="fin-row"><span>الخصم الممنوح:</span><strong>${disc} ج.م</strong></div>
@@ -2643,6 +2842,13 @@
             const name = document.getElementById('newStudentName').value.trim();
             const parentEmail = document.getElementById('newParentEmail').value.trim();
             const parentPhone = document.getElementById('newParentPhone').value.trim();
+            
+            // إضافة الحقول الجديدة عند الإنشاء
+            const stage = document.getElementById('newStudentStage').value;
+            const grade = document.getElementById('newStudentGrade').value;
+            const track = document.getElementById('newStudentTrack').value;
+            const behavior = document.getElementById('newStudentBehavior').value;
+
             const feeTotal = Number(document.getElementById('newFeeTotal').value) || 0;
             const feePaid = Number(document.getElementById('newFeePaid').value) || 0;
             const feeDiscount = Number(document.getElementById('newFeeDiscount').value) || 0;
@@ -2656,6 +2862,10 @@
                     name: name,
                     parentEmail: parentEmail,
                     parentPhone: parentPhone,
+                    stage: stage,
+                    grade: grade,
+                    track: track,
+                    behavior: behavior,
                     feeTotal: feeTotal,
                     feePaid: feePaid,
                     feeDiscount: feeDiscount,
@@ -2665,7 +2875,7 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
 
-                showCustomAlert("نجاح الحفظ", `تم حفظ الطالب والملف المالي (${name}) بنجاح للـ (${currentSemester})!`, 'success');
+                showCustomAlert("نجاح الحفظ", `تم حفظ الطالب والملف المالي والأكاديمي (${name}) بنجاح للـ (${currentSemester})!`, 'success');
                 document.getElementById('newStudentId').value = '';
                 document.getElementById('newStudentName').value = '';
                 document.getElementById('newParentEmail').value = '';
@@ -2736,7 +2946,7 @@
 
             const datePrinted = new Date().toLocaleString('ar-EG');
             
-            let text = `منظومة مسار إديو الذكية - التقرير المالي الرسمي\n`;
+            let text = `منظومة مسار إديو الذكية - التقرير المالي والأكاديمي الرسمي\n`;
             text += `الفصل الدراسي:\t${targetSemester}\tتاريخ الاستخراج:\t${datePrinted}\tعدد الطلاب:\t${dataToProcess.length} طالب\n\n`;
             
             text += `=== ملخص التقرير المالي ===\n`;
@@ -2745,7 +2955,7 @@
             text += `إجمالي المحصل الفعلي:\t${sumPaid} ج.م\n`;
             text += `إجمالي الأقساط المتبقية:\t${sumRem} ج.م\n\n`;
 
-            text += "كود الطالب\tاسم الطالب\tبريد ولي الأمر\tرقم ولي الأمر\tالفصل الدراسي\tحالة الاشتراك\tإجمالي قيمة الاشتراك\tالخصومات\tالمطلوب تحصيله\tالمحصل الفعلي\tالقسط المتبقي\tتاريخ استحقاق القسط\n";
+            text += "كود الطالب\tاسم الطالب\tالمرحلة\tالصف\tالشعبة\tمراقبة السلوك\tبريد ولي الأمر\tرقم ولي الأمر\tالفصل الدراسي\tحالة الاشتراك\tإجمالي قيمة الاشتراك\tالخصومات\tالمطلوب تحصيله\tالمحصل الفعلي\tالقسط المتبقي\tتاريخ استحقاق القسط\n";
             
             dataToProcess.forEach(st => {
                 const tot = Number(st.feeTotal) || 0;
@@ -2753,10 +2963,10 @@
                 const disc = Number(st.feeDiscount) || 0;
                 const req = tot;
                 const rem = Math.max(0, (tot - disc) - paid);
-                text += `${st.id}\t${st.name}\t${st.parentEmail || "غير مسجل"}\t${st.parentPhone || "غير مسجل"}\t${st.semester || "الترم الأول"}\t${st.status || "مفعل"}\t${tot}\t${disc}\t${req}\t${paid}\t${rem}\t${st.dueDate || "غير محدد"}\n`;
+                text += `${st.id}\t${st.name}\t${st.stage||"الابتدائية"}\t${st.grade||"الصف الأول"}\t${st.track||"عام"}\t${st.behavior||"ممتاز 🟢"}\t${st.parentEmail || "غير مسجل"}\t${st.parentPhone || "غير مسجل"}\t${st.semester || "الترم الأول"}\t${st.status || "مفعل"}\t${tot}\t${disc}\t${req}\t${paid}\t${rem}\t${st.dueDate || "غير محدد"}\n`;
             });
 
-            document.getElementById('modalTitle').innerText = `التقرير المالي المفصول ومديونيات الطلاب (${targetSemester}) - مسار إديو`;
+            document.getElementById('modalTitle').innerText = `التقرير المالي الأكاديمي المفصول ومديونيات الطلاب (${targetSemester}) - مسار إديو`;
             document.getElementById('exportText').value = text;
             document.getElementById('exportModal').style.display = 'flex';
         }
@@ -2790,9 +3000,9 @@
                 let text = `منظومة مسار إديو - ${title}\n`;
                 text += `تاريخ الاستخراج:\t${datePrinted}\tإجمالي العمليات المسجلة:\t${dataToExport.length} عملية حضور\n\n`;
 
-                text += "كود الطالب\tاسم الطالب\tرقم هاتف ولي الأمر\tرقم القاعة/المعلم\tنوع الجلسة\tالفصل الدراسي\tوقت الحضور\tالتاريخ\n";
+                text += "كود الطالب\tاسم الطالب\tالمرحلة\tالصف\tرقم هاتف ولي الأمر\tرقم القاعة/المعلم\tنوع الجلسة\tالفصل الدراسي\tوقت الحضور\tالتاريخ\n";
                 dataToExport.forEach(row => {
-                    text += `${row.studentId}\t${row.studentName}\t${row.parentPhone || "غير مسجل"}\t${row.busNumber || "غير محدد"}\t${row.tripDirection || ""}\t${row.semester || "الترم الأول"}\t${row.timeString}\t${row.dateString}\n`;
+                    text += `${row.studentId}\t${row.studentName}\t${row.stage||"الابتدائية"}\t${row.grade||"الصف الأول"}\t${row.parentPhone || "غير مسجل"}\t${row.busNumber || "غير محدد"}\t${row.tripDirection || ""}\t${row.semester || "الترم الأول"}\t${row.timeString}\t${row.dateString}\n`;
                 });
 
                 document.getElementById('modalTitle').innerText = `${title} - مسار إديو`;
