@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <!-- 1. منع الفتح داخل iframe على مستوى المتصفح (Frame Busting Script) -->
+  <!-- 1. منع الفتح داخل iframe -->
   <script>
     if (window.top !== window.self) {
       window.top.location.href = window.self.location.href;
     }
   </script>
-  <!-- 2. وسم الـ CSP للأمان وحماية الموارد والسكريبتات -->
+  <!-- 2. وسم الـ CSP -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self' data: blob:;
     script-src 'self' 'unsafe-inline' 'unsafe-eval' 
@@ -28,14 +28,10 @@
     img-src 'self' data: blob: https:;
   ">
  
- <!-- ربط ملف الـ Manifest -->
   <link rel="manifest" href="manifest.json">
-
-  <!-- تحديد لون شريط العنوان وشعار آيفون/iOS -->
   <meta name="theme-color" content="#ffffff">
   <link rel="apple-touch-icon" href="icon-192.png">
 
-  <!-- تسجيل الـ Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -46,360 +42,347 @@
     }
   </script>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title> Masar Edu System Control - المنظومة التعليمية والتحكم الذكي</title>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <!-- QRCode Generator Library for Student -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- HTML5 QR Code Scanner Library -->
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    
-    <!-- Firebase SDKs (Compat Version) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
-    
-    <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            --card-bg: rgba(255, 255, 255, 0.07);
-            --card-border: rgba(255, 255, 255, 0.12);
-            --sidebar-bg: #0f172a;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Masar Edu System Control - المنظومة التعليمية والتحكم الذكي</title>
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
+  
+  <style>
+      :root {
+          --primary: #4f46e5;
+          --primary-dark: #4338ca;
+          --success: #10b981;
+          --danger: #ef4444;
+          --warning: #f59e0b;
+          --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+          --card-bg: rgba(255, 255, 255, 0.07);
+          --card-border: rgba(255, 255, 255, 0.12);
+          --sidebar-bg: #0f172a;
+          --text-main: #f8fafc;
+          --text-muted: #94a3b8;
+      }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+      * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          font-family: 'Cairo', sans-serif;
+          -webkit-tap-highlight-color: transparent;
+      }
 
-        body {
-            background: var(--bg-gradient);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-            padding-bottom: 20px;
-        }
+      body {
+          background: var(--bg-gradient);
+          color: var(--text-main);
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          overflow-x: hidden;
+          padding-bottom: 20px;
+      }
 
-        header {
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+      header {
+          background: rgba(15, 23, 42, 0.95);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          padding: 12px 16px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+      }
 
-        .header-right { display: flex; align-items: center; gap: 12px; }
+      .header-right { display: flex; align-items: center; gap: 12px; }
 
-        .menu-toggle-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--card-border);
-            color: white; font-size: 1.2rem; width: 40px; height: 40px;
-            border-radius: 12px; cursor: pointer; display: flex;
-            align-items: center; justify-content: center; transition: all 0.2s ease;
-        }
+      .menu-toggle-btn {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid var(--card-border);
+          color: white; font-size: 1.2rem; width: 40px; height: 40px;
+          border-radius: 12px; cursor: pointer; display: flex;
+          align-items: center; justify-content: center; transition: all 0.2s ease;
+      }
 
-        .brand-title { display: flex; align-items: center; gap: 8px; }
-        .brand-logo-svg { width: 34px; height: 34px; filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.5)); flex-shrink: 0; }
-        .brand-text h1 { font-size: 1rem; font-weight: 800; line-height: 1.1; color: #ffffff; }
-        .brand-text p { font-size: 0.65rem; color: var(--text-muted); }
+      .brand-title { display: flex; align-items: center; gap: 8px; }
+      .brand-logo-svg { width: 34px; height: 34px; filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.5)); flex-shrink: 0; }
+      .brand-text h1 { font-size: 1rem; font-weight: 800; line-height: 1.1; color: #ffffff; }
+      .brand-text p { font-size: 0.65rem; color: var(--text-muted); }
 
-        .header-semester-selector select {
-            background: #1e1b4b; color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px; padding: 5px 8px;
-            font-size: 0.75rem; font-weight: 700; outline: none; cursor: pointer;
-        }
+      .header-semester-selector select {
+          background: #1e1b4b; color: #ffffff;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 8px; padding: 5px 8px;
+          font-size: 0.75rem; font-weight: 700; outline: none; cursor: pointer;
+      }
 
-        .sidebar-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
-            z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
-        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+      .sidebar-overlay {
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
+          z-index: 998; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+      }
+      .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
 
-        .sidebar {
-            position: fixed; top: 0; right: -300px; width: 280px; height: 100%;
-            background: var(--sidebar-bg); border-left: 1px solid var(--card-border);
-            z-index: 1000; display: flex; flex-direction: column;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
-        }
-        .sidebar.active { right: 0; }
+      .sidebar {
+          position: fixed; top: 0; right: -300px; width: 280px; height: 100%;
+          background: var(--sidebar-bg); border-left: 1px solid var(--card-border);
+          z-index: 999; display: flex; flex-direction: column;
+          transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
+      }
+      .sidebar.active { right: 0; }
 
-        .sidebar-header {
-            padding: 20px; border-bottom: 1px solid var(--card-border);
-            display: flex; align-items: center; justify-content: space-between;
-        }
+      .sidebar-header {
+          padding: 20px; border-bottom: 1px solid var(--card-border);
+          display: flex; align-items: center; justify-content: space-between;
+      }
 
-        .sidebar-menu { padding: 15px; flex: 1; overflow-y: auto; }
-        .sidebar-menu-title { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin: 12px 10px 6px 10px; }
+      .sidebar-menu { padding: 15px; flex: 1; overflow-y: auto; }
+      .sidebar-menu-title { font-size: 0.7rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin: 12px 10px 6px 10px; }
 
-        .nav-item {
-            width: 100%; padding: 12px 16px; background: transparent;
-            border: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 700;
-            border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px;
-            text-align: right; transition: all 0.2s ease; margin-bottom: 4px;
-        }
-        .nav-item i { font-size: 1.1rem; width: 24px; }
-        .nav-item:hover, .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+      .nav-item {
+          width: 100%; padding: 12px 16px; background: transparent;
+          border: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 700;
+          border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px;
+          text-align: right; transition: all 0.2s ease; margin-bottom: 4px;
+      }
+      .nav-item i { font-size: 1.1rem; width: 24px; }
+      .nav-item:hover, .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
 
-        .sidebar-footer { padding: 15px; border-top: 1px solid var(--card-border); font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+      .sidebar-footer { padding: 15px; border-top: 1px solid var(--card-border); font-size: 0.75rem; color: var(--text-muted); text-align: center; }
 
-        .container { padding: 16px; flex: 1; max-width: 600px; margin: 0 auto; width: 100%; }
-        .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.3s ease; }
+      .container { padding: 16px; flex: 1; max-width: 600px; margin: 0 auto; width: 100%; position: relative; z-index: 1; }
+      .view { display: none; }
+      .view.active { display: block; animation: fadeIn 0.3s ease; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-        .glass-card {
-            background: var(--card-bg); backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border); border-radius: 20px;
-            padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+      .glass-card {
+          background: var(--card-bg); backdrop-filter: blur(16px);
+          border: 1px solid var(--card-border); border-radius: 20px;
+          padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      }
 
-        .portal-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
-        }
+      .portal-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 15px;
+          margin-top: 15px;
+      }
 
-        .portal-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 20px 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+      .portal-card {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid var(--card-border);
+          border-radius: 16px;
+          padding: 20px 15px;
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+      }
 
-        .portal-card:hover {
-            background: rgba(79, 70, 229, 0.2);
-            border-color: var(--primary);
-            transform: translateY(-4px);
-        }
+      .portal-card:hover {
+          background: rgba(79, 70, 229, 0.2);
+          border-color: var(--primary);
+          transform: translateY(-4px);
+      }
 
-        .portal-card i {
-            font-size: 2.2rem;
-            color: var(--primary);
-        }
+      .portal-card i { font-size: 2.2rem; color: var(--primary); }
+      .portal-card h3 { font-size: 0.95rem; color: white; font-weight: 700; }
 
-        .portal-card h3 {
-            font-size: 0.95rem;
-            color: white;
-            font-weight: 700;
-        }
+      .collapsible-card {
+          background: var(--card-bg);
+          backdrop-filter: blur(16px);
+          border: 1px solid var(--card-border);
+          border-radius: 20px;
+          margin-bottom: 15px;
+          overflow: hidden;
+          transition: all 0.3s ease;
+          box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      }
 
-        .collapsible-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+      .collapsible-header {
+          padding: 16px 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          cursor: pointer;
+          user-select: none;
+          background: rgba(255, 255, 255, 0.02);
+          transition: background 0.2s ease;
+      }
 
-        .collapsible-header {
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-            background: rgba(255, 255, 255, 0.02);
-            transition: background 0.2s ease;
-        }
+      .collapsible-header:hover { background: rgba(255, 255, 255, 0.06); }
+      .collapsible-header h3 { font-size: 1rem; margin: 0; display: flex; align-items: center; gap: 10px; }
+      .collapsible-icon { transition: transform 0.3s ease; font-size: 0.9rem; color: var(--text-muted); }
+      .collapsible-card.active .collapsible-icon { transform: rotate(180deg); color: white; }
 
-        .collapsible-header:hover { background: rgba(255, 255, 255, 0.06); }
+      .collapsible-content {
+          max-height: 0; overflow: hidden; padding: 0 20px;
+          transition: max-height 0.35s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
+      }
 
-        .collapsible-header h3 { font-size: 1rem; margin: 0; display: flex; align-items: center; gap: 10px; }
-        .collapsible-icon { transition: transform 0.3s ease; font-size: 0.9rem; color: var(--text-muted); }
-        .collapsible-card.active .collapsible-icon { transform: rotate(180deg); color: white; }
+      .collapsible-card.active .collapsible-content {
+          max-height: 3000px; padding: 15px 20px 20px 20px;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          transition: max-height 0.5s ease-in-out, padding 0.3s ease;
+      }
 
-        .collapsible-content {
-            max-height: 0; overflow: hidden; padding: 0 20px;
-            transition: max-height 0.35s cubic-bezier(0, 1, 0, 1), padding 0.3s ease;
-        }
+      .financial-card {
+          background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1));
+          border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 16px; padding: 15px; margin: 15px 0;
+          text-align: right;
+      }
+      .fin-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
+      .fin-row span { color: var(--text-muted); }
+      .fin-row strong { color: white; }
 
-        .collapsible-card.active .collapsible-content {
-            max-height: 3000px; padding: 15px 20px 20px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            transition: max-height 0.5s ease-in-out, padding 0.3s ease;
-        }
+      .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
+      .stat-box { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--card-border); padding: 12px; border-radius: 14px; text-align: center; }
+      .stat-box h3 { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+      .stat-box p { font-size: 0.7rem; color: var(--text-muted); }
 
-        .financial-card {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1));
-            border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 16px; padding: 15px; margin: 15px 0;
-            text-align: right;
-        }
-        .fin-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
-        .fin-row span { color: var(--text-muted); }
-        .fin-row strong { color: white; }
+      .semester-tab-container {
+          display: flex; gap: 8px; margin-bottom: 15px; background: rgba(0, 0, 0, 0.2);
+          padding: 6px; border-radius: 12px; border: 1px solid var(--card-border);
+      }
+      .semester-tab-btn {
+          flex: 1; padding: 10px; border: none; background: transparent;
+          color: var(--text-muted); font-size: 0.85rem; font-weight: 700;
+          border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
+      }
+      .semester-tab-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4); }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px; }
-        .stat-box { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--card-border); padding: 12px; border-radius: 14px; text-align: center; }
-        .stat-box h3 { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
-        .stat-box p { font-size: 0.7rem; color: var(--text-muted); }
+      #reader { width: 100%; border-radius: 16px; overflow: hidden; border: 2px dashed rgba(255, 255, 255, 0.2); background: #000; min-height: 250px; position: relative; }
+      #reader video { object-fit: cover !important; border-radius: 16px; width: 100% !important; }
 
-        .semester-tab-container {
-            display: flex; gap: 8px; margin-bottom: 15px; background: rgba(0, 0, 0, 0.2);
-            padding: 6px; border-radius: 12px; border: 1px solid var(--card-border);
-        }
-        .semester-tab-btn {
-            flex: 1; padding: 10px; border: none; background: transparent;
-            color: var(--text-muted); font-size: 0.85rem; font-weight: 700;
-            border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
-        }
-        .semester-tab-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4); }
+      .form-group { margin-bottom: 15px; }
+      .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
 
-        #reader { width: 100%; border-radius: 16px; overflow: hidden; border: 2px dashed rgba(255, 255, 255, 0.2); background: #000; min-height: 250px; position: relative; }
-        #reader video { object-fit: cover !important; border-radius: 16px; width: 100% !important; }
+      .input-box {
+          width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.05);
+          border: 1px solid var(--card-border); border-radius: 12px; color: white;
+          font-size: 1rem; outline: none;
+      }
 
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+      .btn-submit {
+          width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+          border: none; border-radius: 12px; color: white; font-size: 1rem; font-weight: 700;
+          cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+      }
 
-        .input-box {
-            width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border); border-radius: 12px; color: white;
-            font-size: 1rem; outline: none;
-        }
+      .btn-excel { background: linear-gradient(135deg, #10b981, #059669); margin-bottom: 10px; }
+      .btn-month { background: linear-gradient(135deg, #0284c7, #0369a1); margin-bottom: 10px; }
+      .btn-all { background: linear-gradient(135deg, #8b5cf6, #7c3aed); margin-bottom: 10px; }
 
-        .btn-submit {
-            width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border: none; border-radius: 12px; color: white; font-size: 1rem; font-weight: 700;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
+      .result-card { display: none; text-align: center; padding: 25px 20px; border-radius: 20px; margin-top: 15px; animation: popIn 0.3s ease; }
+      @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        .btn-excel { background: linear-gradient(135deg, #10b981, #059669); margin-bottom: 10px; }
-        .btn-month { background: linear-gradient(135deg, #0284c7, #0369a1); margin-bottom: 10px; }
-        .btn-all { background: linear-gradient(135deg, #8b5cf6, #7c3aed); margin-bottom: 10px; }
+      .result-card.success { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); }
+      .result-card.danger { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); }
 
-        .result-card { display: none; text-align: center; padding: 25px 20px; border-radius: 20px; margin-top: 15px; animation: popIn 0.3s ease; }
-        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+      .student-item, .log-item, .bus-item, .notification-card {
+          display: flex; align-items: center; justify-content: space-between;
+          background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border);
+          border-radius: 12px; padding: 12px 16px; margin-bottom: 10px;
+      }
 
-        .result-card.success { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); }
-        .result-card.danger { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); }
+      .student-info h4, .log-info h4, .bus-info h4, .notification-info h4 { font-size: 0.95rem; font-weight: 600; }
+      .student-info p, .log-info p, .bus-info p, .notification-info p { font-size: 0.75rem; color: var(--text-muted); }
 
-        .student-item, .log-item, .bus-item, .notification-card {
-            display: flex; align-items: center; justify-content: space-between;
-            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border);
-            border-radius: 12px; padding: 12px 16px; margin-bottom: 10px;
-        }
+      .action-btns-group { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+      .btn-sm { padding: 6px 10px; border-radius: 8px; border: none; font-size: 0.75rem; cursor: pointer; color: white; }
+      .btn-toggle { background: var(--warning); }
+      .btn-unbind { background: #0284c7; }
+      .btn-delete { background: var(--danger); }
+      .btn-pay { background: #10b981; }
+      .btn-edit { background: #6366f1; }
 
-        .student-info h4, .log-info h4, .bus-info h4, .notification-info h4 { font-size: 0.95rem; font-weight: 600; }
-        .student-info p, .log-info p, .bus-info p, .notification-info p { font-size: 0.75rem; color: var(--text-muted); }
+      .modal-overlay {
+          display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.85); z-index: 1000; padding: 20px; align-items: center; justify-content: center;
+      }
+      .modal-body {
+          background: #1e1b4b; border: 1px solid var(--card-border); border-radius: 16px; padding: 20px;
+          width: 100%; max-width: 500px; max-height: 85vh; display: flex; flex-direction: column; overflow-y: auto;
+      }
+      .modal-body textarea {
+          width: 100%; height: 220px; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border);
+          color: #10b981; padding: 10px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.82rem; margin: 10px 0; outline: none; white-space: pre; overflow-x: auto;
+      }
 
-        .action-btns-group { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
-        .btn-sm { padding: 6px 10px; border-radius: 8px; border: none; font-size: 0.75rem; cursor: pointer; color: white; }
-        .btn-toggle { background: var(--warning); }
-        .btn-unbind { background: #0284c7; }
-        .btn-delete { background: var(--danger); }
-        .btn-pay { background: #10b981; }
-        .btn-edit { background: #6366f1; }
+      #qrcodeCanvas { background: white; padding: 15px; border-radius: 16px; display: inline-block; margin: 15px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+      
+      .pulse-live {
+          display: inline-block; width: 8px; height: 8px; background-color: var(--success);
+          border-radius: 50%; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+          animation: pulse-ring 1.5s infinite; margin-left: 5px;
+      }
+      @keyframes pulse-ring {
+          0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+          70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+          100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+      }
 
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85); z-index: 1000; padding: 20px; align-items: center; justify-content: center;
-        }
-        .modal-body {
-            background: #1e1b4b; border: 1px solid var(--card-border); border-radius: 16px; padding: 20px;
-            width: 100%; max-width: 500px; max-height: 85vh; display: flex; flex-direction: column; overflow-y: auto;
-        }
-        .modal-body textarea {
-            width: 100%; height: 220px; background: rgba(0,0,0,0.3); border: 1px solid var(--card-border);
-            color: #10b981; padding: 10px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 0.82rem; margin: 10px 0; outline: none; white-space: pre; overflow-x: auto;
-        }
+      .custom-dialog-overlay {
+          position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
+          z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px;
+      }
+      .custom-dialog-box {
+          background: #1e1b4b; border: 1px solid var(--card-border); border-radius: 20px;
+          padding: 24px; width: 100%; max-width: 420px; text-align: center;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: popIn 0.25s ease;
+      }
+      .custom-dialog-icon { font-size: 2.8rem; margin-bottom: 12px; }
+      .custom-dialog-title { font-size: 1.15rem; font-weight: 800; color: white; margin-bottom: 8px; }
+      .custom-dialog-msg { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; white-space: pre-line; }
+      .custom-dialog-btns { display: flex; gap: 10px; justify-content: center; }
 
-        #qrcodeCanvas { background: white; padding: 15px; border-radius: 16px; display: inline-block; margin: 15px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-        
-        .pulse-live {
-            display: inline-block; width: 8px; height: 8px; background-color: var(--success);
-            border-radius: 50%; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-            animation: pulse-ring 1.5s infinite; margin-left: 5px;
-        }
-        @keyframes pulse-ring {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
+      .due-warning-banner {
+          background: rgba(245, 158, 11, 0.2);
+          border: 1px solid var(--warning);
+          border-radius: 12px;
+          padding: 12px;
+          margin-bottom: 15px;
+          text-align: center;
+          font-size: 0.85rem;
+          color: #fef08a;
+      }
 
-        .custom-dialog-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
-            z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px;
-        }
-        .custom-dialog-box {
-            background: #1e1b4b; border: 1px solid var(--card-border); border-radius: 20px;
-            padding: 24px; width: 100%; max-width: 420px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: popIn 0.25s ease;
-        }
-        .custom-dialog-icon { font-size: 2.8rem; margin-bottom: 12px; }
-        .custom-dialog-title { font-size: 1.15rem; font-weight: 800; color: white; margin-bottom: 8px; }
-        .custom-dialog-msg { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; white-space: pre-line; }
-        .custom-dialog-btns { display: flex; gap: 10px; justify-content: center; }
+      .due-danger-banner {
+          background: rgba(239, 68, 68, 0.2);
+          border: 1px solid var(--danger);
+          border-radius: 12px;
+          padding: 12px;
+          margin-bottom: 15px;
+          text-align: center;
+          font-size: 0.85rem;
+          color: #fca5a5;
+      }
 
-        .due-warning-banner {
-            background: rgba(245, 158, 11, 0.2);
-            border: 1px solid var(--warning);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #fef08a;
-        }
-
-        .due-danger-banner {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid var(--danger);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #fca5a5;
-        }
-
-        @media (max-width: 380px) {
-            .container { padding: 10px; }
-            .collapsible-header { padding: 14px 14px; }
-            .collapsible-header h3 { font-size: 0.9rem; }
-            .collapsible-content { padding: 0 10px; }
-            .collapsible-card.active .collapsible-content { padding: 12px 10px 15px 10px; }
-            .stats-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+      @media (max-width: 380px) {
+          .container { padding: 10px; }
+          .collapsible-header { padding: 14px 14px; }
+          .collapsible-header h3 { font-size: 0.9rem; }
+          .collapsible-content { padding: 0 10px; }
+          .collapsible-card.active .collapsible-content { padding: 12px 10px 15px 10px; }
+          .stats-grid { grid-template-columns: 1fr; }
+      }
+  </style>
 </head>
 <body>
 
@@ -420,7 +403,7 @@
                     </defs>
                 </svg>
                 <div class="brand-text">
-                    <h1> Masar Edu system</h1>
+                    <h1>Masar Edu System</h1>
                     <p id="currentPageTitle">اختيار الواجهة</p>
                 </div>
             </div>
@@ -468,8 +451,7 @@
         </div>
 
         <div class="sidebar-footer">
-            منظومةMasar Edu system
-  الذكية v3.9<br>
+            منظومة Masar Edu System الذكية v3.9<br>
             جميع الحقوق محفوظة © 2026
         </div>
     </aside>
@@ -480,8 +462,7 @@
         <div id="portalSelectorTab" class="view active">
             <div class="glass-card" style="text-align: center;">
                 <i class="fa-solid fa-graduation-cap" style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;"></i>
-                <h2 style="font-size: 1.3rem; margin-bottom: 5px;">مرحباً بك في منظومة Masar Edu system
- الذكية</h2>
+                <h2 style="font-size: 1.3rem; margin-bottom: 5px;">مرحباً بك في منظومة Masar Edu System الذكية</h2>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">يرجى تحديد الصفة للدخول للواجهة المخصصة لك:</p>
 
                 <div class="portal-grid">
@@ -509,7 +490,7 @@
             </div>
         </div>
 
-        <!-- VIEW: UNIFIED LOGIN FOR ALL ROLES -->
+        <!-- VIEW: UNIFIED LOGIN -->
         <div id="unifiedTab" class="view">
             <div class="glass-card" style="text-align: center;">
                 <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;"></i>
@@ -534,12 +515,12 @@
             </div>
         </div>
 
-        <!-- VIEW 0: STUDENT DYNAMIC QR CARD -->
+        <!-- VIEW 0: STUDENT -->
         <div id="studentTab" class="view">
             <div id="studentAuthCard" class="glass-card" style="text-align: center;">
                 <i class="fa-solid fa-mobile-screen-button" style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;"></i>
                 <h3 style="margin-bottom: 15px;">دخول الطالب</h3>
-                <input type="text" id="studentLoginId" class="input-box" placeholder="أدخل كود الطالب (مثال: STD-1001)" style="text-align: center; margin-bottom: 15px;">
+                <input type="text" id="studentLoginId" class="input-box" placeholder="أدخل كود الطالب (مثال: 1234)" style="text-align: center; margin-bottom: 15px;">
                 <button class="btn-submit" onclick="loginStudentPortal()">عرض كارت الباركود الذكي</button>
                 <button class="btn-submit" style="background: rgba(255,255,255,0.08); margin-top: 10px;" onclick="switchUserRole('selector')">العودة للشاشة الرئيسية</button>
             </div>
@@ -549,7 +530,6 @@
                 <h2 id="studentCardName" style="font-size: 1.3rem; color: #ffffff;">---</h2>
                 <p id="studentCardId" style="font-size: 0.85rem; color: var(--text-muted);">---</p>
                 
-                <!-- عرض تفاصيل الحقل والمستوى في كارت الطالب -->
                 <div id="studentAcademicBadge" style="margin: 6px 0; font-size: 0.8rem; color: var(--warning);"></div>
 
                 <div style="margin: 10px 0;">
@@ -565,7 +545,7 @@
             </div>
         </div>
 
-        <!-- VIEW 1: PARENT MONITORING & FINANCIAL TAB -->
+        <!-- VIEW 1: PARENT -->
         <div id="parentTab" class="view">
             <div id="parentAuthCard" class="glass-card" style="text-align: center;">
                 <i class="fa-solid fa-user-nurse" style="font-size: 3rem; color: var(--success); margin-bottom: 10px;"></i>
@@ -749,7 +729,7 @@
             </div>
         </div>
 
-        <!-- VIEW 4: ADMIN & FINANCIAL DASHBOARD -->
+        <!-- VIEW 4: ADMIN DASHBOARD -->
         <div id="adminTab" class="view">
             <div id="adminAuthCard" class="glass-card" style="text-align: center;">
                 <i class="fa-solid fa-user-shield" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 10px;"></i>
@@ -884,7 +864,6 @@
                     </div>
                 </div>
 
-                <!-- نموذج إضافة الطالب: تزويده بالحقول التعليمية والمستويات ومراقبة السلوك -->
                 <div class="collapsible-card">
                     <div class="collapsible-header" onclick="toggleCollapsible(this)">
                         <h3 style="color: var(--primary);"><i class="fa-solid fa-user-plus"></i> إضافة / تجديد اشتراك وملف أكاديمي ومالي لطالب</h3>
@@ -896,7 +875,6 @@
                         <div class="form-group"><label>بريد ولي الأمر (للتأمين والحسابات)</label><input type="email" id="newParentEmail" class="input-box" placeholder="parent@example.com"></div>
                         <div class="form-group"><label>رقم هاتف ولي الأمر (للتنبيه الآلي)</label><input type="tel" id="newParentPhone" class="input-box" placeholder="مثال: 01012345678"></div>
                         
-                        <!-- الحقول التعليمية والمستويات والمراقبة 🟢 -->
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             <div class="form-group">
                                 <label>المرحلة / الحقل التعليمي</label>
@@ -1038,8 +1016,7 @@
     <div id="studentActivationModal" class="modal-overlay">
         <div class="modal-body" style="text-align: center;">
             <i class="fa-solid fa-mobile-screen-button" style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;"></i>
-            <h3 style="color: white; font-size: 1.2rem; margin-bottom: 10px;">مرحباً بك في منظومة Masar Edu system
-</h3>
+            <h3 style="color: white; font-size: 1.2rem; margin-bottom: 10px;">مرحباً بك في منظومة Masar Edu System</h3>
             <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; margin-bottom: 15px;">
                 أهلاً بك <strong id="activationStudentName" style="color: var(--warning);">الطالب</strong>، لتأكيد التفعيل وحماية حسابك سيتم ربط كارت الباركود بهذا الهاتف تحديداً، ولن يُسمح باستخدامه من جهاز آخر.
             </p>
@@ -1078,7 +1055,6 @@
                 <input type="tel" id="editParentPhone" class="input-box">
             </div>
 
-            <!-- الحقول التعليمية في مودال التعديل 🟢 -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div class="form-group">
                     <label>المرحلة / الحقل التعليمي</label>
@@ -1170,11 +1146,9 @@
         </div>
     </div>
 
-    <!-- Export Modal Box -->
     <div id="exportModal" class="modal-overlay">
         <div class="modal-body">
-            <h3 id="modalTitle" style="color: white; font-size: 1.1rem;">تقرير الحضور والمالية - Masar Edu system
-</h3>
+            <h3 id="modalTitle" style="color: white; font-size: 1.1rem;">تقرير الحضور والمالية - Masar Edu System</h3>
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 5px;">تم تنسيق النص أدناه بتنسيق جداول TSV القياسي. اضغط على الزر أدناه وانسخه مباشرة إلى Excel أو Word:</p>
             <textarea id="exportText" readonly wrap="off"></textarea>
             <button class="btn-submit" onclick="copyExportText()"><i class="fa-solid fa-copy"></i> نسخ التقرير للنسخ في Excel / Word</button>
@@ -1217,14 +1191,14 @@
     </div>
 
     <script>
-     const firebaseConfig = {
-    apiKey: "AIzaSyDX2kMWtPt4zZo5eBui-5O_aeMRB7ejfqQ",
-    authDomain: "masar-edu-control-system.firebaseapp.com",
-    projectId: "masar-edu-control-system",
-    storageBucket: "masar-edu-control-system.firebasestorage.app",
-    messagingSenderId: "322216005890",
-    appId: "1:322216005890:android:06852c792d048d315b721b"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyDX2kMWtPt4zZo5eBui-5O_aeMRB7ejfqQ",
+        authDomain: "masar-edu-control-system.firebaseapp.com",
+        projectId: "masar-edu-control-system",
+        storageBucket: "masar-edu-control-system.firebasestorage.app",
+        messagingSenderId: "322216005890",
+        appId: "1:322216005890:android:06852c792d048d315b721b"
+    };
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -1257,7 +1231,6 @@
         let lastScannedStudentId = "";
         let lastScanTimestamp = 0;
 
-        // دالة ديناميكية لتحديث الصفوف الدراسية حسب الحقل/المرحلة التعليمية المختارة
         function updateGradeOptions(stageSelectId, gradeSelectId) {
             const stage = document.getElementById(stageSelectId).value;
             const gradeSelect = document.getElementById(gradeSelectId);
@@ -1733,8 +1706,7 @@
                 `تم ربط بريدك الإلكتروني (${email}) بنجاح بحساب ولي الأمر رقم (${phone}).\n\nهل ترغب في فتح تطبيق البريد الآن لتأكيد واستلام رسالة التفعيل؟`,
                 () => {
                     try {
-                        const subject = encodeURIComponent("تفعيل حساب ولي الأمر - منظومة Masar Edu system
-");
+                        const subject = encodeURIComponent("تفعيل حساب ولي الأمر - منظومة Masar Edu System");
                         const body = encodeURIComponent(`مرحباً بك، تم تفعيل ربط بريدك الإلكتروني بنجاح بحساب ولي الأمر رقم: ${phone}`);
                         window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
                     } catch (err) {}
@@ -1948,7 +1920,6 @@
             document.getElementById('studentCardName').innerText = data.name;
             document.getElementById('studentCardId').innerText = `ID: ${inputId} (${data.semester || "الترم الأول"})`;
             
-            // عرض تفاصيل المسار التعليمي في كارت الباركود الخاص بالمستخدم
             const stStage = data.stage || 'الابتدائية';
             const stGrade = data.grade || 'الصف الأول';
             const stTrack = data.track || 'عام';
@@ -2264,8 +2235,7 @@
                 return showCustomAlert("تنبيه", `لا توجد سجلات طلاب لقاعة رقم (${currentBusNumber}) لتصديرها!`, 'warning');
             }
 
-            const headerTitle = "منظومة Masar Edu system
- - تقرير حضور القاعة/المجموعة الأكاديمي";
+            const headerTitle = "منظومة Masar Edu System - تقرير حضور القاعة/المجموعة الأكاديمي";
             const datePrinted = new Date().toLocaleString('ar-EG');
             
             let text = `${headerTitle}\n`;
@@ -2292,11 +2262,9 @@
             }
 
             try {
-                // 1. تسجيل الدخول عبر Auth
                 const userCredential = await firebase.auth().signInWithEmailAndPassword(email, pass);
                 const user = userCredential.user;
 
-                // 2. التحقق المباشر من وجود الحساب داخل مجموعة admins في Firestore
                 const adminDoc = await db.collection("admins").doc(user.uid).get();
 
                 let isUserAdmin = false;
@@ -2315,7 +2283,6 @@
                     return showCustomAlert("تم رفض الدخول", "هذا الحساب لا يملك صلاحية الأدمن!", 'error');
                 }
 
-                // 3. فتح لوحة التحكم بنجاح
                 document.getElementById('adminAuthCard').style.display = 'none';
                 document.getElementById('adminContent').style.display = 'block';
                 
@@ -2334,59 +2301,56 @@
             }
         }
 
-       async function createNewAdminFromPanel() {
-    const email = document.getElementById('newAdminEmailInput').value.trim();
-    const pass = document.getElementById('newAdminPassInput').value.trim();
+        async function createNewAdminFromPanel() {
+            const email = document.getElementById('newAdminEmailInput').value.trim();
+            const pass = document.getElementById('newAdminPassInput').value.trim();
 
-    if (!email || !pass) {
-        return showCustomAlert("تنبيه", "يرجى كتابة البريد الإلكتروني وكلمة المرور!", 'warning');
-    }
+            if (!email || !pass) {
+                return showCustomAlert("تنبيه", "يرجى كتابة البريد الإلكتروني وكلمة المرور!", 'warning');
+            }
 
-    if (pass.length < 6) {
-        return showCustomAlert("كلمة مرور ضعيفة", "يجب أن تكون كلمة المرور 6 أحرف أو أرقام على الأقل!", 'warning');
-    }
+            if (pass.length < 6) {
+                return showCustomAlert("كلمة مرور ضعيفة", "يجب أن تكون كلمة المرور 6 أحرف أو أرقام على الأقل!", 'warning');
+            }
 
-    try {
-        // 1. إنشاء تطبيق فرعي مؤقت لإنشاء حساب Auth دون تسجيل خروج الأدمن الحالي
-        let secondaryApp;
-        if (!firebase.apps.some(app => app.name === "SecondaryApp")) {
-            secondaryApp = firebase.initializeApp(firebaseConfig, "SecondaryApp");
-        } else {
-            secondaryApp = firebase.app("SecondaryApp");
-        }
+            try {
+                let secondaryApp;
+                if (!firebase.apps.some(app => app.name === "SecondaryApp")) {
+                    secondaryApp = firebase.initializeApp(firebaseConfig, "SecondaryApp");
+                } else {
+                    secondaryApp = firebase.app("SecondaryApp");
+                }
 
-        // 2. إنشاء المستخدم في Firebase Auth عبر التطبيق الفرعي
-        const userCredential = await secondaryApp.auth().createUserWithEmailAndPassword(email, pass);
-        const newAdminUser = userCredential.user;
+                const userCredential = await secondaryApp.auth().createUserWithEmailAndPassword(email, pass);
+                const newAdminUser = userCredential.user;
 
-        // 3. كتابة مستند الأدمن بواسطة الأدمن الحالي (db الرئيسي) لأنه يملك صلاحية isAdmin()
-        await db.collection("admins").doc(newAdminUser.uid).set({
-            email: email,
-            role: "admin",
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+                await db.collection("admins").doc(newAdminUser.uid).set({
+                    email: email,
+                    role: "admin",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
 
-        // 4. تسجيل خروج التطبيق الفرعي فوراً
-        await secondaryApp.auth().signOut();
+                await secondaryApp.auth().signOut();
 
-        document.getElementById('newAdminEmailInput').value = '';
-        document.getElementById('newAdminPassInput').value = '';
+                document.getElementById('newAdminEmailInput').value = '';
+                document.getElementById('newAdminPassInput').value = '';
 
-        showCustomAlert("تم إضافة الأدمن بنجاح", `تم إنشاء وتأمين حساب الأدمن الجديد (${email}) بنجاح!`, "success");
+                showCustomAlert("تم إضافة الأدمن بنجاح", `تم إنشاء وتأمين حساب الأدمن الجديد (${email}) بنجاح!`, "success");
 
-    } catch (err) {
-        console.error(err);
-        let errorMsg = "حدث خطأ أثناء إضافة حساب الأدمن!";
-        if (err.code === 'auth/email-already-in-use') {
-            errorMsg = "هذا البريد الإلكتروني مُسجل بالفعل بحساب آخر!";
-        } else if (err.code === 'auth/invalid-email') {
-            errorMsg = "صيغة البريد الإلكتروني غير صحيحة!";
-        } else if (err.code === 'permission-denied') {
-            errorMsg = "تم رفض العملية! تأكد من أن حسابك الحالي يملك صلاحية الأدمن.";
-        }
-        showCustomAlert("خطأ في الإنشاء", errorMsg, 'error');
-    }
-} 
+            } catch (err) {
+                console.error(err);
+                let errorMsg = "حدث خطأ أثناء إضافة حساب الأدمن!";
+                if (err.code === 'auth/email-already-in-use') {
+                    errorMsg = "هذا البريد الإلكتروني مُسجل بالفعل بحساب آخر!";
+                } else if (err.code === 'auth/invalid-email') {
+                    errorMsg = "صيغة البريد الإلكتروني غير صحيحة!";
+                } else if (err.code === 'permission-denied') {
+                    errorMsg = "تم رفض العملية! تأكد من أن حسابك الحالي يملك صلاحية الأدمن.";
+                }
+                showCustomAlert("خطأ في الإنشاء", errorMsg, 'error');
+            }
+        } 
+
         async function changeAdminPassword() {
             const oldPass = document.getElementById('oldAdminPassInput').value.trim();
             const newPass = document.getElementById('changeAdminNewPassInput').value.trim();
@@ -2521,8 +2485,7 @@
                 }
 
                 const datePrinted = new Date().toLocaleString('ar-EG');
-                let text = `منظومة Masar Edu system
- - تقرير قاعة/مجموعة منفصل\n`;
+                let text = `منظومة Masar Edu System - تقرير قاعة/مجموعة منفصل\n`;
                 text += `رقم القاعة:\t${busNum}\tتاريخ التقرير:\t${currentAdminReportDate}\tتاريخ الاستخراج:\t${datePrinted}\n\n`;
                 text += "كود الطالب\tاسم الطالب\tالمرحلة\tالصف\tرقم هاتف ولي الأمر\tرقم القاعة\tنوع الحضور\tوقت التسجيل\tالتاريخ\n";
 
@@ -2676,7 +2639,6 @@
             document.getElementById('editParentEmail').value = student.parentEmail || '';
             document.getElementById('editParentPhone').value = student.parentPhone || '';
             
-            // تعبئة الحقول التعليمية في مودال التعديل
             const stage = student.stage || 'الابتدائية';
             document.getElementById('editStudentStage').value = stage;
             updateGradeOptions('editStudentStage', 'editStudentGrade');
@@ -2704,7 +2666,6 @@
             const newParentEmail = document.getElementById('editParentEmail').value.trim();
             const newParentPhone = document.getElementById('editParentPhone').value.trim();
             
-            // قراءة قيم الحقول التعليمية المحدثة
             const newStage = document.getElementById('editStudentStage').value;
             const newGrade = document.getElementById('editStudentGrade').value;
             const newTrack = document.getElementById('editStudentTrack').value;
@@ -2877,7 +2838,6 @@
             const parentEmail = document.getElementById('newParentEmail').value.trim();
             const parentPhone = document.getElementById('newParentPhone').value.trim();
             
-            // إضافة الحقول الجديدة عند الإنشاء
             const stage = document.getElementById('newStudentStage').value;
             const grade = document.getElementById('newStudentGrade').value;
             const track = document.getElementById('newStudentTrack').value;
@@ -2980,8 +2940,7 @@
 
             const datePrinted = new Date().toLocaleString('ar-EG');
             
-            let text = `منظومة Masar Edu system
- الذكية - التقرير المالي والأكاديمي الرسمي\n`;
+            let text = `منظومة Masar Edu System الذكية - التقرير المالي والأكاديمي الرسمي\n`;
             text += `الفصل الدراسي:\t${targetSemester}\tتاريخ الاستخراج:\t${datePrinted}\tعدد الطلاب:\t${dataToProcess.length} طالب\n\n`;
             
             text += `=== ملخص التقرير المالي ===\n`;
@@ -3001,8 +2960,7 @@
                 text += `${st.id}\t${st.name}\t${st.stage||"الابتدائية"}\t${st.grade||"الصف الأول"}\t${st.track||"عام"}\t${st.behavior||"ممتاز 🟢"}\t${st.parentEmail || "غير مسجل"}\t${st.parentPhone || "غير مسجل"}\t${st.semester || "الترم الأول"}\t${st.status || "مفعل"}\t${tot}\t${disc}\t${req}\t${paid}\t${rem}\t${st.dueDate || "غير محدد"}\n`;
             });
 
-            document.getElementById('modalTitle').innerText = `التقرير المالي الأكاديمي المفصول ومديونيات الطلاب (${targetSemester}) - Masar Edu system
-`;
+            document.getElementById('modalTitle').innerText = `التقرير المالي الأكاديمي المفصول ومديونيات الطلاب (${targetSemester}) - Masar Edu System`;
             document.getElementById('exportText').value = text;
             document.getElementById('exportModal').style.display = 'flex';
         }
@@ -3033,8 +2991,7 @@
                 if (dataToExport.length === 0) return showCustomAlert("تنبيه", "لا توجد سجلات حضور!", 'warning');
 
                 const datePrinted = new Date().toLocaleString('ar-EG');
-                let text = `منظومة Masar Edu system
- - ${title}\n`;
+                let text = `منظومة Masar Edu System - ${title}\n`;
                 text += `تاريخ الاستخراج:\t${datePrinted}\tإجمالي العمليات المسجلة:\t${dataToExport.length} عملية حضور\n\n`;
 
                 text += "كود الطالب\tاسم الطالب\tالمرحلة\tالصف\tرقم هاتف ولي الأمر\tرقم القاعة/المعلم\tنوع الجلسة\tالفصل الدراسي\tوقت الحضور\tالتاريخ\n";
@@ -3042,8 +2999,7 @@
                     text += `${row.studentId}\t${row.studentName}\t${row.stage||"الابتدائية"}\t${row.grade||"الصف الأول"}\t${row.parentPhone || "غير مسجل"}\t${row.busNumber || "غير محدد"}\t${row.tripDirection || ""}\t${row.semester || "الترم الأول"}\t${row.timeString}\t${row.dateString}\n`;
                 });
 
-                document.getElementById('modalTitle').innerText = `${title} - Masar Edu system
-`;
+                document.getElementById('modalTitle').innerText = `${title} - Masar Edu System`;
                 document.getElementById('exportText').value = text;
                 document.getElementById('exportModal').style.display = 'flex';
             } catch (e) { showCustomAlert("خطأ", "خطأ أثناء إعداد التقرير!", 'error'); }
@@ -3080,8 +3036,7 @@
             const content = document.getElementById('infoModalContent');
 
             if (type === 'about') {
-                title.innerText = "نبذة عن منظومة Masar Edu system
- الذكية";
+                title.innerText = "نبذة عن منظومة Masar Edu System الذكية";
                 content.innerHTML = `<p>منظومة متكاملة للتحكم في المنظومة التعليمية وحصر حضور الطلاب تلقائياً وإرسال إشعارات فورية لأولياء الأمور ومتابعة الأمور المالية بمرونة.</p>`;
             } else if (type === 'terms') {
                 title.innerText = "شروط الاستخدام";
@@ -3101,7 +3056,7 @@
             const downloadUrl = 'https://www.appcreator24.com/app4201237-z4ija2';
             
             const shareText = 
-`🎓✨ * Masar Edu System Control* ✨🎓
+`🎓✨ *Masar Edu System Control* ✨🎓
 المنظومة التعليمية الذكية الأولى لإدارة الحضور والتحكم بالأقساط والمالية! 🚀
 
 📌 *مميزات المنظومة:*
@@ -3119,8 +3074,7 @@ ${downloadUrl}
 💡 شارك التطبيق للمشتركين والطلاب وأولياء الأمور وكل من له صفة بالمؤسسة! ❤️`;
 
             const shareData = {
-                title: 'تطبيق Masar Edu system
- لإدارة التحكم الأكاديمي والتحقق الذكي',
+                title: 'تطبيق Masar Edu System لإدارة التحكم الأكاديمي والتحقق الذكي',
                 text: shareText,
                 url: webUrl
             };
@@ -3138,7 +3092,7 @@ ${downloadUrl}
             }
         }
     </script>
-    
+
     <!-- حماية الكود ومنع فتح أدوات التطوير DevTools -->
     <script>
         window.addEventListener('contextmenu', function (e) {
@@ -3188,31 +3142,30 @@ ${downloadUrl}
             setInterval(blockDevTools, 1000);
         })();
     </script>
-  <!-- زر تثبيت اختياري يظهر فقط عند استيفاء شروط المتصفح -->
-<button id="installApp" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; padding: 12px 20px; font-size: 0.9rem; font-weight: bold; font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); cursor: pointer;">
-  📲 تثبيت تطبيق Masar Edu control system
- على الشاشة
-</button>
-<script>
-  let deferredPrompt;
-  const installBtn = document.getElementById('installApp');
+    <!-- PWA Install Button -->
+    <button id="installApp" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 9999; padding: 12px 20px; font-size: 0.9rem; font-weight: bold; font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); cursor: pointer;">
+      📲 تثبيت تطبيق Masar Edu control system على الشاشة
+    </button>
+    <script>
+      let deferredPrompt;
+      const installBtn = document.getElementById('installApp');
 
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.style.display = 'block';
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'block';
 
-    installBtn.addEventListener('click', () => {
-      installBtn.style.display = 'none';
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === 'accepted') {
-          console.log('User accepted the install prompt');
-        }
-        deferredPrompt = null;
+        installBtn.addEventListener('click', () => {
+          installBtn.style.display = 'none';
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+            }
+            deferredPrompt = null;
+          });
+        });
       });
-    });
-  });
-</script>
+    </script>
 </body>
 </html>
