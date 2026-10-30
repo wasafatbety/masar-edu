@@ -1,21 +1,24 @@
 {
   "name": "مسار (Masar Edu System)",
-  "short_name": "Masar Edu System",
-  "description": "تطبيق مسار (Masar Edu System) هو المنظومة الشاملة لإدارة السناتر والمراكز التعليمية  ويتكون التطبيق من عدة واجهات مترابطة تعمل عبر نظام سحابي موحد",
+  "short_name": "Masar Edu",
+  "description": "تطبيق مسار (Masar Edu System) هو المنظومة الشاملة لإدارة السناتر والمراكز التعليمية ويتكون التطبيق من عدة واجهات مترابطة تعمل عبر نظام سحابي موحد",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "icons": [
     {
       "src": "192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
