@@ -1973,54 +1973,53 @@
             if (studentId) processStudentAttendance(studentId);
         }
 
-        function processStudentAttendance(studentId) {
-            const direction = document.getElementById('tripDirectionSelect').value;
-            const now = new Date();
-            const dateStr = now.toISOString().split('T')[0];
-            const timeStr = now.toLocaleTimeString('ar-EG');
+      function processStudentAttendance(studentId) {
+    const direction = document.getElementById('tripDirectionSelect').value;
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const timeStr = now.toLocaleTimeString('ar-EG');
 
-            db.collection("students").doc(studentId).get().then(doc => {
-                const resCard = document.getElementById('resultCard');
-                resCard.style.display = 'block';
+    verifyEduRecaptcha('submit_attendance', function() {
+        const payload = {
+            studentId: studentId,
+            busNum: currentDriverBus,
+            direction: direction,
+            semester: activeSemester,
+            date: dateStr,
+            time: timeStr
+        };
 
-                if (!doc.exists) {
-                    document.getElementById('resultIcon').innerHTML = `<i class="fa-solid fa-circle-xmark" style="color:var(--danger)"></i>`;
-                    document.getElementById('resultTitle').innerText = "كود غير مسجل";
-                    document.getElementById('resultDetail').innerText = `الكود ${studentId} غير موجود بالمنظومة!`;
-                    resCard.className = "result-card danger";
-                    return;
-                }
+        fetch("https://us-central1-masar-edu-control-system.cloudfunctions.net/recordAttendance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            const resCard = document.getElementById('resultCard');
+            resCard.style.display = 'block';
 
-                const student = doc.data();
-                if (student.status !== "مفعل") {
-                    document.getElementById('resultIcon').innerHTML = `<i class="fa-solid fa-user-slash" style="color:var(--danger)"></i>`;
-                    document.getElementById('resultTitle').innerText = "طالب غير مفعل / موقف";
-                    document.getElementById('resultDetail').innerText = `الطالب: ${student.name} - يرجى مراجعة الإدارة المالية`;
-                    resCard.className = "result-card danger";
-                    return;
-                }
-
-                db.collection("attendance").add({
-                    studentId: studentId,
-                    studentName: student.name,
-                    parentPhone: student.parentPhone || '',
-                    busNum: currentDriverBus,
-                    direction: direction,
-                    semester: activeSemester,
-                    date: dateStr,
-                    time: timeStr,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => {
-                    document.getElementById('resultIcon').innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>`;
-                    document.getElementById('resultTitle').innerText = "تم تسجيل الحضور بنجاح 🟢";
-                    document.getElementById('resultDetail').innerText = `الطالب: ${student.name} (${student.stage || ''})`;
-                    document.getElementById('resultBadge').innerText = `${direction} - قاعة: ${currentDriverBus}`;
-                    resCard.className = "result-card success";
-                    document.getElementById('manualStudentId').value = '';
-                });
-            });
-        }
-
+            if (data.success) {
+                document.getElementById('resultIcon').innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>`;
+                document.getElementById('resultTitle').innerText = "تم تسجيل الحضور بنجاح 🟢";
+                document.getElementById('resultDetail').innerText = `الطالب: ${data.studentName}`;
+                document.getElementById('resultBadge').innerText = `${direction} - قاعة: ${currentDriverBus}`;
+                resCard.className = "result-card success";
+                document.getElementById('manualStudentId').value = '';
+            } else {
+                document.getElementById('resultIcon').innerHTML = `<i class="fa-solid fa-circle-xmark" style="color:var(--danger)"></i>`;
+                document.getElementById('resultTitle').innerText = data.message || "خطأ في التسجيل";
+                document.getElementById('resultDetail').innerText = "";
+                document.getElementById('resultBadge').innerText = "";
+                resCard.className = "result-card danger";
+            }
+        })
+        .catch(err => {
+            console.error("Error connecting to backend:", err);
+            showCustomDialog("fa-solid fa-triangle-exclamation", "خطأ اتصال", "تعذر الاتصال بالباك‌اند المركزي.");
+        });
+    });
+}
         function authenticateDriverLogs() {
             const busNum = document.getElementById('busNumberInputLogs').value.trim();
             const pass = document.getElementById('driverPassLogs').value.trim();
