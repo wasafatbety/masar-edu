@@ -75,7 +75,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-functions-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
-  
     <style>
         :root {
             --primary: #4f46e5;
@@ -1048,7 +1047,7 @@
         </div>
     </div>
 
- <!-- JavaScript Logic & Firebase Integration (Full & Clean) -->
+    <!-- JavaScript Logic & Firebase Integration -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDX2kMWtPt4zZo5eBui-5O_aeMRB7ejfqQ",
@@ -1091,15 +1090,12 @@
             db.collection("settings").doc("academic").get().then(doc => {
                 if (doc.exists && doc.data().activeSemester) {
                     activeSemester = doc.data().activeSemester;
-                    if(document.getElementById('quickDriverSemesterSelect')) document.getElementById('quickDriverSemesterSelect').value = activeSemester;
-                    if(document.getElementById('activeSemesterSelect')) document.getElementById('activeSemesterSelect').value = activeSemester;
+                    document.getElementById('quickDriverSemesterSelect').value = activeSemester;
+                    document.getElementById('activeSemesterSelect').value = activeSemester;
                 }
             }).catch(err => console.log("Settings fetch error:", err));
 
             switchUserRole('selector');
-            if(document.getElementById('unifiedRoleSelect')) {
-                toggleUnifiedFields();
-            }
         });
 
         function toggleSidebar() {
@@ -1174,8 +1170,8 @@
 
         function updateSemesterSetting(newVal) {
             activeSemester = newVal;
-            if(document.getElementById('quickDriverSemesterSelect')) document.getElementById('quickDriverSemesterSelect').value = newVal;
-            if(document.getElementById('activeSemesterSelect')) document.getElementById('activeSemesterSelect').value = newVal;
+            document.getElementById('quickDriverSemesterSelect').value = newVal;
+            document.getElementById('activeSemesterSelect').value = newVal;
 
             db.collection("settings").doc("academic").set({
                 activeSemester: newVal,
@@ -1232,97 +1228,17 @@
             document.getElementById('studentLoginId').value = '';
         }
 
-        function loadAdminDashboardData() {
-            db.collection("students").get().then(snapshot => {
-                let total = snapshot.size;
-                let active = 0;
-                snapshot.forEach(doc => {
-                    if (doc.data().status === 'مفعل') active++;
-                });
-                if(document.getElementById('statTotal')) document.getElementById('statTotal').innerText = total;
-                if(document.getElementById('statActive')) document.getElementById('statActive').innerText = active;
-            }).catch(err => console.log("خطأ تحميل بيانات المشرف:", err));
-        }
-
-        function authenticateAdmin() {
-            const email = document.getElementById('adminEmailInput').value.trim();
-            const pass = document.getElementById('adminPass').value.trim();
-            if (!email || !pass) {
-                showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال البريد الإلكتروني وكلمة المرور.");
+        // ==========================================
+        // 🔔 دوال الإشعارات والـ VAPID المحدثة بالكامل
+        // ==========================================
+        function requestBrowserNotificationPermission() {
+            if (!('serviceWorker' in navigator) || typeof firebase === 'undefined') {
+                showCustomDialog("fa-solid fa-triangle-exclamation", "غير مدعوم", "المتصفح لا يدعم خدمة الإشعارات أو Firebase غير معرف.");
                 return;
             }
-            auth.signInWithEmailAndPassword(email, pass)
-                .then(() => {
-                    currentRole = 'admin';
-                    document.getElementById('adminAuthCard').style.display = 'none';
-                    document.getElementById('adminContent').style.display = 'block';
-                    loadAdminDashboardData();
-                })
-                .catch(err => showCustomDialog("fa-solid fa-circle-xmark", "خطأ دخول", err.message));
-        }
 
-        function toggleUnifiedFields() {
-            const role = document.getElementById('unifiedRoleSelect').value;
-            const container = document.getElementById('unifiedInputFields');
-            if (!container) return;
-            if (role === 'student') {
-                container.innerHTML = `<div class="form-group"><input type="text" id="uniStudentId" class="input-box" placeholder="أدخل كود الطالب" style="text-align:center;"></div>`;
-            } else if (role === 'parent') {
-                container.innerHTML = `<div class="form-group"><input type="tel" id="uniParentPhone" class="input-box" placeholder="رقم هاتف ولي الأمر" style="text-align:center;"></div>`;
-            } else if (role === 'driver') {
-                container.innerHTML = `<div class="form-group"><input type="text" id="uniDriverBus" class="input-box" placeholder="رقم القاعة / المجموعة" style="text-align:center;"></div>`;
-            } else if (role === 'admin') {
-                container.innerHTML = `<div class="form-group"><input type="email" id="uniAdminEmail" class="input-box" placeholder="بريد المشرف" style="text-align:center;"></div>`;
-            }
-        }
-
-        function executeUnifiedLogin() {
-            const role = document.getElementById('unifiedRoleSelect').value;
-            if (role === 'student') {
-                const sId = document.getElementById('uniStudentId')?.value.trim();
-                if (sId) {
-                    document.getElementById('studentLoginId').value = sId;
-                    switchUserRole('student');
-                    loginStudentPortal();
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال كود الطالب.");
-                }
-            } else if (role === 'parent') {
-                const pPhone = document.getElementById('uniParentPhone')?.value.trim();
-                if (pPhone) {
-                    document.getElementById('parentPhoneInput').value = pPhone;
-                    switchUserRole('parent');
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال رقم الهاتف.");
-                }
-            } else if (role === 'driver') {
-                const dBus = document.getElementById('uniDriverBus')?.value.trim();
-                if (dBus) {
-                    document.getElementById('busNumberInputScan').value = dBus;
-                    switchUserRole('driver');
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال رقم القاعة.");
-                }
-            } else if (role === 'admin') {
-                switchUserRole('admin');
-            }
-        }
-
-        function showCustomDialog(iconClass, title, message) {
-            if(document.getElementById('customDialogIcon')) document.getElementById('customDialogIcon').innerHTML = `<i class="${iconClass}" style="color: var(--primary);"></i>`;
-            if(document.getElementById('customDialogTitle')) document.getElementById('customDialogTitle').innerText = title;
-            if(document.getElementById('customDialogMsg')) document.getElementById('customDialogMsg').innerText = message;
-            if(document.getElementById('customDialogBtns')) document.getElementById('customDialogBtns').innerHTML = `<button class="btn-submit" style="width: auto; padding: 10px 30px;" onclick="closeCustomDialog()">حسناً</button>`;
-            if(document.getElementById('customDialog')) document.getElementById('customDialog').style.display = 'flex';
-        }
-
-        function closeCustomDialog() {
-            if(document.getElementById('customDialog')) document.getElementById('customDialog').style.display = 'none';
-        }
-
-        function requestBrowserNotificationPermission() {
-            if (!('serviceWorker' in navigator) || typeof firebase === 'undefined') return;
             const messaging = firebase.messaging();
+
             Notification.requestPermission().then((permission) => {
                 if (permission === "granted") {
                     messaging.getToken({ 
@@ -1332,12 +1248,64 @@
                             db.collection("students").doc(currentStudent.id).update({
                                 fcmToken: currentToken,
                                 tokenUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                            }).catch(err => console.log("Token update error:", err));
+                            }).catch(err => console.log("خطأ حفظ Token الطالب:", err));
                         }
-                    }).catch(err => console.log("Token fetch error:", err));
+                    }).catch(err => console.log("خطأ في جلب الـ Token:", err));
+
                     showCustomDialog("fa-solid fa-circle-check", "تم التفعيل بنجاح", "تم تفعيل الإشعارات الفورية على هذا الهاتف!");
+                    new Notification("منظومة مسار التعليمية", {
+                        body: "تم تفعيل التنبيهات بنجاح لاستقبال الإشعارات.",
+                        icon: "icon-192.png"
+                    });
+                } else {
+                    showCustomDialog("fa-solid fa-circle-xmark", "تم رفض الإذن", "تم رفض إذن الإشعارات من المتصفح.");
                 }
             });
         }
-    </script></body>
+
+        function requestParentNotificationPermission() {
+            if (!('serviceWorker' in navigator) || typeof firebase === 'undefined') {
+                showCustomDialog("fa-solid fa-triangle-exclamation", "غير مدعوم", "المتصفح لا يدعم خدمة الإشعارات أو Firebase غير معرف.");
+                return;
+            }
+
+            const messaging = firebase.messaging();
+
+            Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {
+                    messaging.getToken({ 
+                        vapidKey: 'BBTDLPFV6CLvM11VfuZm6SxsVmGhoVi9bBJoPg5vJxfoV2iKDkawoLtI4undilGeSlprzxsr3pmhY0sQEb3Nos4' 
+                    }).then((currentToken) => {
+                        if (currentToken && currentParent) {
+                            db.collection("parents").doc(currentParent.phone).update({
+                                fcmToken: currentToken,
+                                tokenUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            }).catch(err => console.log("خطأ حفظ Token ولي الأمر:", err));
+                        }
+                    }).catch(err => console.log("خطأ في جلب الـ Token لولي الأمر:", err));
+
+                    showCustomDialog("fa-solid fa-circle-check", "تم تفعيل إشعارات ولي الأمر", "تم تفعيل التنبيهات الفورية على هذا الهاتف بنجاح!");
+                    new Notification("منظومة مسار التعليمية - متابعة ولي الأمر", {
+                        body: "تم ربط هذا الهاتف بنجاح لاستقبال تنبيهات حضور الطلاب.",
+                        icon: "icon-192.png"
+                    });
+                } else {
+                    showCustomDialog("fa-solid fa-circle-xmark", "تم رفض الإذن", "تم رفض إذن الإشعارات.");
+                }
+            });
+        }
+
+        function showCustomDialog(iconClass, title, message) {
+            document.getElementById('customDialogIcon').innerHTML = `<i class="${iconClass}" style="color: var(--primary);"></i>`;
+            document.getElementById('customDialogTitle').innerText = title;
+            document.getElementById('customDialogMsg').innerText = message;
+            document.getElementById('customDialogBtns').innerHTML = `<button class="btn-submit" style="width: auto; padding: 10px 30px;" onclick="closeCustomDialog()">حسناً</button>`;
+            document.getElementById('customDialog').style.display = 'flex';
+        }
+
+        function closeCustomDialog() {
+            document.getElementById('customDialog').style.display = 'none';
+        }
+    </script>
+</body>
 </html>
