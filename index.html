@@ -1724,39 +1724,47 @@
             document.getElementById('studentLoginId').value = '';
         }
 
-       function loginOrRegisterParentPortal() {
-    const phone = document.getElementById('parentPhoneInput').value.trim();
-    const email = document.getElementById('parentEmailInput').value.trim();
-    const pass = document.getElementById('parentPasswordInput').value.trim();
+        function loginOrRegisterParentPortal() {
+            const phone = document.getElementById('parentPhoneInput').value.trim();
+            const email = document.getElementById('parentEmailInput').value.trim();
+            const pass = document.getElementById('parentPasswordInput').value.trim();
+            const passConfirm = document.getElementById('parentPasswordConfirmInput').value.trim();
 
-    if (!phone || !pass) {
-        showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى كتابة رقم الهاتف وكلمة المرور.");
-        return;
-    }
-
-    // فحص حماية reCAPTCHA v3 وإرسال الطلب للباك‌اند
-    verifyEduRecaptcha('parent_login', function(token) {
-        fetch("https://us-central1-masar-edu-control-system.cloudfunctions.net/parentLogin", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone: phone, recaptchaToken: token })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                currentParent = { phone: phone, ...data.parentData };
-                renderParentDashboard();
-            } else {
-                showCustomDialog("fa-solid fa-circle-xmark", "خطأ", data.message || "فشل الدخول.");
+            if (!phone || !pass) {
+                showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى كتابة رقم الهاتف وكلمة المرور.");
+                return;
             }
-        })
-        .catch(err => {
-            console.error("Parent Login Error:", err);
-            showCustomDialog("fa-solid fa-triangle-exclamation", "خطأ اتصال", "تعذر الاتصال بالباك‌اند.");
-        });
-    });
-}
-      function toggleParentForgotPass(show) {
+
+            db.collection("parents").doc(phone).get().then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.password !== pass) {
+                        showCustomDialog("fa-solid fa-circle-xmark", "خطأ", "كلمة المرور غير صحيحة.");
+                        return;
+                    }
+                    currentParent = { phone: doc.id, ...data };
+                    renderParentDashboard();
+                } else {
+                    if (passConfirm && pass !== passConfirm) {
+                        showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "كلمتا المرور غير متطابقتين.");
+                        return;
+                    }
+                    const parentData = {
+                        phone: phone,
+                        email: email || '',
+                        password: pass,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    db.collection("parents").doc(phone).set(parentData).then(() => {
+                        currentParent = parentData;
+                        renderParentDashboard();
+                        showCustomDialog("fa-solid fa-circle-check", "تم التسجيل", "تم إنشاء حساب ولي الأمر بنجاح.");
+                    });
+                }
+            });
+        }
+
+        function toggleParentForgotPass(show) {
             document.getElementById('parentAuthCard').style.display = show ? 'none' : 'block';
             document.getElementById('parentForgotCard').style.display = show ? 'block' : 'none';
         }
@@ -1892,38 +1900,27 @@
         }
 
         function authenticateDriver() {
-    const busNum = document.getElementById('busNumberInputScan').value.trim();
-    const pass = document.getElementById('driverPassScan').value.trim();
+            const busNum = document.getElementById('busNumberInputScan').value.trim();
+            const pass = document.getElementById('driverPassScan').value.trim();
 
-    if (!busNum || !pass) {
-        showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "أدخل رقم القاعة وكلمة المرور.");
-        return;
-    }
+            if (!busNum || !pass) {
+                showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "أدخل رقم القاعة وكلمة المرور.");
+                return;
+            }
 
-    // فحص حماية reCAPTCHA v3 والتحقق عبر الباك‌اند المركزي
-    verifyEduRecaptcha('staff_login', function(token) {
-        fetch("https://us-central1-masar-edu-control-system.cloudfunctions.net/staffLogin", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: busNum, password: pass, recaptchaToken: token })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
+            db.collection("settings").doc("driverAuth").get().then(doc => {
+                const driverPass = doc.exists ? doc.data().password : "123456";
+                if (pass !== driverPass) {
+                    showCustomDialog("fa-solid fa-circle-xmark", "خطأ", "كلمة سر المشرف غير صحيحة.");
+                    return;
+                }
                 currentDriverBus = busNum;
                 document.getElementById('driverAuthCardScan').style.display = 'none';
                 document.getElementById('driverScanContent').style.display = 'block';
                 document.getElementById('currentDriverBusTitle').innerText = busNum;
-            } else {
-                showCustomDialog("fa-solid fa-circle-xmark", "خطأ", data.message || "كلمة سر المشرف غير صحيحة.");
-            }
-        })
-        .catch(err => {
-            console.error("Staff Login Error:", err);
-            showCustomDialog("fa-solid fa-triangle-exclamation", "خطأ اتصال", "تعذر الاتصال بالباك‌اند المركزي.");
-        });
-    });
-}
+            });
+        }
+
         function logoutDriver() {
             stopScanner();
             currentDriverBus = null;
@@ -1976,54 +1973,55 @@
             if (studentId) processStudentAttendance(studentId);
         }
 
-    function processStudentAttendance(studentId) {
-    const direction = document.getElementById('tripDirectionSelect').value;
-    const now = new Date();
-    const dateStr = now.toISOString().split('T')[0];
-    const timeStr = now.toLocaleTimeString('ar-EG');
+        function processStudentAttendance(studentId) {
+            const direction = document.getElementById('tripDirectionSelect').value;
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.toLocaleTimeString('ar-EG');
 
-    verifyEduRecaptcha('submit_attendance', function(recaptchaToken) { // استلمنا التوكن هنا
-        const payload = {
-            studentId: studentId,
-            busNum: currentDriverBus,
-            direction: direction,
-            semester: activeSemester,
-            date: dateStr,
-            time: timeStr,
-            recaptchaToken: recaptchaToken // أضفنا التوكن للطلب
-        };
+            db.collection("students").doc(studentId).get().then(doc => {
+                const resCard = document.getElementById('resultCard');
+                resCard.style.display = 'block';
 
-        fetch("https://us-central1-masar-edu-control-system.cloudfunctions.net/recordAttendance", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-            const resCard = document.getElementById('resultCard');
-            resCard.style.display = 'block';
+                if (!doc.exists) {
+                    document.getElementById('resultIcon').innerHTML = `<i class="fa-solid fa-circle-xmark" style="color:var(--danger)"></i>`;
+                    document.getElementById('resultTitle').innerText = "كود غير مسجل";
+                    document.getElementById('resultDetail').innerText = `الكود ${studentId} غير موجود بالمنظومة!`;
+                    resCard.className = "result-card danger";
+                    return;
+                }
 
-            if (data.success) {
-                document.getElementById('resultIcon').innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>`;
-                document.getElementById('resultTitle').innerText = "تم تسجيل الحضور بنجاح 🟢";
-                document.getElementById('resultDetail').innerText = `الطالب: ${data.studentName}`;
-                document.getElementById('resultBadge').innerText = `${direction} - قاعة: ${currentDriverBus}`;
-                resCard.className = "result-card success";
-                document.getElementById('manualStudentId').value = '';
-            } else {
-                document.getElementById('resultIcon').innerHTML = `<i class="fa-solid fa-circle-xmark" style="color:var(--danger)"></i>`;
-                document.getElementById('resultTitle').innerText = data.message || "خطأ في التسجيل";
-                document.getElementById('resultDetail').innerText = "";
-                document.getElementById('resultBadge').innerText = "";
-                resCard.className = "result-card danger";
-            }
-        })
-        .catch(err => {
-            console.error("Error connecting to backend:", err);
-            showCustomDialog("fa-solid fa-triangle-exclamation", "خطأ اتصال", "تعذر الاتصال بالباك‌اند المركزي.");
-        });
-    });
-}        function authenticateDriverLogs() {
+                const student = doc.data();
+                if (student.status !== "مفعل") {
+                    document.getElementById('resultIcon').innerHTML = `<i class="fa-solid fa-user-slash" style="color:var(--danger)"></i>`;
+                    document.getElementById('resultTitle').innerText = "طالب غير مفعل / موقف";
+                    document.getElementById('resultDetail').innerText = `الطالب: ${student.name} - يرجى مراجعة الإدارة المالية`;
+                    resCard.className = "result-card danger";
+                    return;
+                }
+
+                db.collection("attendance").add({
+                    studentId: studentId,
+                    studentName: student.name,
+                    parentPhone: student.parentPhone || '',
+                    busNum: currentDriverBus,
+                    direction: direction,
+                    semester: activeSemester,
+                    date: dateStr,
+                    time: timeStr,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    document.getElementById('resultIcon').innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--success)"></i>`;
+                    document.getElementById('resultTitle').innerText = "تم تسجيل الحضور بنجاح 🟢";
+                    document.getElementById('resultDetail').innerText = `الطالب: ${student.name} (${student.stage || ''})`;
+                    document.getElementById('resultBadge').innerText = `${direction} - قاعة: ${currentDriverBus}`;
+                    resCard.className = "result-card success";
+                    document.getElementById('manualStudentId').value = '';
+                });
+            });
+        }
+
+        function authenticateDriverLogs() {
             const busNum = document.getElementById('busNumberInputLogs').value.trim();
             const pass = document.getElementById('driverPassLogs').value.trim();
 
@@ -2146,50 +2144,24 @@
                 });
         }
 
-       function authenticateAdmin() {
-    const passInput = document.getElementById('adminPassInput') || document.getElementById('adminPass');
-    if (!passInput) {
-        showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "حقل كلمة المرور غير متطابق في الصفحة.");
-        return;
-    }
+        function authenticateAdmin() {
+            const email = document.getElementById('adminEmailInput').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
 
-    const adminPass = passInput.value.trim();
-    if (!adminPass) {
-        showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "أدخل كلمة مرور الأدمن.");
-        return;
-    }
-
-    // فحص reCAPTCHA v3 والتحقق عبر الباك‌اند السحابي
-    verifyEduRecaptcha('admin_login', function(token) {
-        fetch("https://us-central1-masar-edu-control-system.cloudfunctions.net/adminLogin", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ password: adminPass, recaptchaToken: token })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                // فتح لوحة التحكم الرئيسية للأدمن
-                const authCard = document.getElementById('adminAuthCard');
-                const dashboardContent = document.getElementById('adminDashboardContent') || document.getElementById('adminContent');
-                
-                if (authCard) authCard.style.display = 'none';
-                if (dashboardContent) dashboardContent.style.display = 'block';
-                
-                // استدعاء دالة تحميل بيانات لوحة التحكم إن وجدت
-                if (typeof loadAdminDashboardData === 'function') {
-                    loadAdminDashboardData();
-                }
-            } else {
-                showCustomDialog("fa-solid fa-circle-xmark", "خطأ", data.message || "كلمة السر غير صحيحة.");
+            if (!email || !pass) {
+                showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "أدخل البريد وكلمة المرور.");
+                return;
             }
-        })
-        .catch(err => {
-            console.error("Admin Login Error:", err);
-            showCustomDialog("fa-solid fa-triangle-exclamation", "خطأ اتصال", "تعذر الاتصال بالباك‌اند المركزي.");
-        });
-    });
-}
+
+            auth.signInWithEmailAndPassword(email, pass).then(userCredential => {
+                document.getElementById('adminAuthCard').style.display = 'none';
+                document.getElementById('adminContent').style.display = 'block';
+                loadAdminDashboardData();
+            }).catch(error => {
+                showCustomDialog("fa-solid fa-circle-xmark", "فشل الدخول", "بيانات الاعتماد غير صحيحة: " + error.message);
+            });
+        }
+
         function loadAdminDashboardData() {
             loadFinancialReports();
             loadBusesSummary();
@@ -3005,21 +2977,23 @@ ${downloadUrl}
     }
 </script>
 <script>
-   function verifyEduRecaptcha(actionName, callback) {
-    if (typeof grecaptcha === 'undefined') {
-        callback(null);
-        return;
-    }
+    // دالة التحقق من الـ reCAPTCHA لمنظومة Masar Edu
+    function verifyEduRecaptcha(actionName, callback) {
+        if (typeof grecaptcha === 'undefined') {
+            callback();
+            return;
+        }
 
-    grecaptcha.ready(function() {
-        grecaptcha.execute('6LesVwsuAAAAAHXabXsIFuBSbLpZl1JZA3WMFUgr', {action: actionName}).then(function(token) {
-            console.log('Edu reCAPTCHA Token generated for ' + actionName);
-            callback(token); // مررنا التوكن هنا
-        }).catch(err => {
-            console.error('reCAPTCHA error:', err);
-            callback(null);
+        grecaptcha.ready(function() {
+            grecaptcha.execute('6LesVwsuAAAAAHXabXsIFuBSbLpZl1JZA3WMFUgr', {action: actionName}).then(function(token) {
+                console.log('Edu reCAPTCHA Token generated for ' + actionName);
+                callback();
+            }).catch(err => {
+                console.error('reCAPTCHA error:', err);
+                callback();
+            });
         });
-    });
-}</script>
+    }
+</script>
 </body>
 </html>
