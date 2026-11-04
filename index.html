@@ -1724,47 +1724,39 @@
             document.getElementById('studentLoginId').value = '';
         }
 
-        function loginOrRegisterParentPortal() {
-            const phone = document.getElementById('parentPhoneInput').value.trim();
-            const email = document.getElementById('parentEmailInput').value.trim();
-            const pass = document.getElementById('parentPasswordInput').value.trim();
-            const passConfirm = document.getElementById('parentPasswordConfirmInput').value.trim();
+       function loginOrRegisterParentPortal() {
+    const phone = document.getElementById('parentPhoneInput').value.trim();
+    const email = document.getElementById('parentEmailInput').value.trim();
+    const pass = document.getElementById('parentPasswordInput').value.trim();
 
-            if (!phone || !pass) {
-                showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى كتابة رقم الهاتف وكلمة المرور.");
-                return;
+    if (!phone || !pass) {
+        showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى كتابة رقم الهاتف وكلمة المرور.");
+        return;
+    }
+
+    // فحص حماية reCAPTCHA v3 وإرسال الطلب للباك‌اند
+    verifyEduRecaptcha('parent_login', function(token) {
+        fetch("https://us-central1-masar-edu-control-system.cloudfunctions.net/parentLogin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phone: phone, recaptchaToken: token })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                currentParent = { phone: phone, ...data.parentData };
+                renderParentDashboard();
+            } else {
+                showCustomDialog("fa-solid fa-circle-xmark", "خطأ", data.message || "فشل الدخول.");
             }
-
-            db.collection("parents").doc(phone).get().then(doc => {
-                if (doc.exists) {
-                    const data = doc.data();
-                    if (data.password !== pass) {
-                        showCustomDialog("fa-solid fa-circle-xmark", "خطأ", "كلمة المرور غير صحيحة.");
-                        return;
-                    }
-                    currentParent = { phone: doc.id, ...data };
-                    renderParentDashboard();
-                } else {
-                    if (passConfirm && pass !== passConfirm) {
-                        showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "كلمتا المرور غير متطابقتين.");
-                        return;
-                    }
-                    const parentData = {
-                        phone: phone,
-                        email: email || '',
-                        password: pass,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-                    db.collection("parents").doc(phone).set(parentData).then(() => {
-                        currentParent = parentData;
-                        renderParentDashboard();
-                        showCustomDialog("fa-solid fa-circle-check", "تم التسجيل", "تم إنشاء حساب ولي الأمر بنجاح.");
-                    });
-                }
-            });
-        }
-
-        function toggleParentForgotPass(show) {
+        })
+        .catch(err => {
+            console.error("Parent Login Error:", err);
+            showCustomDialog("fa-solid fa-triangle-exclamation", "خطأ اتصال", "تعذر الاتصال بالباك‌اند.");
+        });
+    });
+}
+      function toggleParentForgotPass(show) {
             document.getElementById('parentAuthCard').style.display = show ? 'none' : 'block';
             document.getElementById('parentForgotCard').style.display = show ? 'block' : 'none';
         }
@@ -1900,27 +1892,38 @@
         }
 
         function authenticateDriver() {
-            const busNum = document.getElementById('busNumberInputScan').value.trim();
-            const pass = document.getElementById('driverPassScan').value.trim();
+    const busNum = document.getElementById('busNumberInputScan').value.trim();
+    const pass = document.getElementById('driverPassScan').value.trim();
 
-            if (!busNum || !pass) {
-                showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "أدخل رقم القاعة وكلمة المرور.");
-                return;
-            }
+    if (!busNum || !pass) {
+        showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "أدخل رقم القاعة وكلمة المرور.");
+        return;
+    }
 
-            db.collection("settings").doc("driverAuth").get().then(doc => {
-                const driverPass = doc.exists ? doc.data().password : "123456";
-                if (pass !== driverPass) {
-                    showCustomDialog("fa-solid fa-circle-xmark", "خطأ", "كلمة سر المشرف غير صحيحة.");
-                    return;
-                }
+    // فحص حماية reCAPTCHA v3 والتحقق عبر الباك‌اند المركزي
+    verifyEduRecaptcha('staff_login', function(token) {
+        fetch("https://us-central1-masar-edu-control-system.cloudfunctions.net/staffLogin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username: busNum, password: pass, recaptchaToken: token })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
                 currentDriverBus = busNum;
                 document.getElementById('driverAuthCardScan').style.display = 'none';
                 document.getElementById('driverScanContent').style.display = 'block';
                 document.getElementById('currentDriverBusTitle').innerText = busNum;
-            });
-        }
-
+            } else {
+                showCustomDialog("fa-solid fa-circle-xmark", "خطأ", data.message || "كلمة سر المشرف غير صحيحة.");
+            }
+        })
+        .catch(err => {
+            console.error("Staff Login Error:", err);
+            showCustomDialog("fa-solid fa-triangle-exclamation", "خطأ اتصال", "تعذر الاتصال بالباك‌اند المركزي.");
+        });
+    });
+}
         function logoutDriver() {
             stopScanner();
             currentDriverBus = null;
