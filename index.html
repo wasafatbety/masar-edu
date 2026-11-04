@@ -8,8 +8,7 @@
     }
   </script>
 
-  <!-- 2. وسم الـ CSP للأمان وحماية الموارد والسكريبتات (تم تحديثه لتدعم EmailJS) -->
-  <meta http-equiv="Content-Security-Policy" content="
+<meta http-equiv="Content-Security-Policy" content="
     default-src 'self' data: blob:;
     script-src 'self' 'unsafe-inline' 'unsafe-eval' 
                https://cdnjs.cloudflare.com 
@@ -27,10 +26,11 @@
                 https://*.googleapis.com 
                 https://firestore.googleapis.com 
                 https://identitytoolkit.googleapis.com
+                https://securetoken.googleapis.com
+                https://*.firebase.com
                 https://api.emailjs.com;
     img-src 'self' data: blob: https:;
   ">
-
   <!-- 3. مكتبة EmailJS وتهيئة المفتاح العام الخاص بك -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
