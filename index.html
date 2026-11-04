@@ -8,7 +8,8 @@
     }
   </script>
 
-<meta http-equiv="Content-Security-Policy" content="
+  <!-- 2. وسم الـ CSP للأمان وحماية الموارد والسكريبتات (تم تحديثه لتدعم EmailJS) -->
+  <meta http-equiv="Content-Security-Policy" content="
     default-src 'self' data: blob:;
     script-src 'self' 'unsafe-inline' 'unsafe-eval' 
                https://cdnjs.cloudflare.com 
@@ -26,11 +27,10 @@
                 https://*.googleapis.com 
                 https://firestore.googleapis.com 
                 https://identitytoolkit.googleapis.com
-                https://securetoken.googleapis.com
-                https://*.firebase.com
                 https://api.emailjs.com;
     img-src 'self' data: blob: https:;
   ">
+
   <!-- 3. مكتبة EmailJS وتهيئة المفتاح العام الخاص بك -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
@@ -1047,87 +1047,7 @@
         </div>
     </div>
 
-    
-        // ==========================================
-        // 🔔 دوال الإشعارات والـ VAPID المحدثة بالكامل
-        // ==========================================
-        function requestBrowserNotificationPermission() {
-            if (!('serviceWorker' in navigator) || typeof firebase === 'undefined') {
-                showCustomDialog("fa-solid fa-triangle-exclamation", "غير مدعوم", "المتصفح لا يدعم خدمة الإشعارات أو Firebase غير معرف.");
-                return;
-            }
-
-            const messaging = firebase.messaging();
-
-            Notification.requestPermission().then((permission) => {
-                if (permission === "granted") {
-                    messaging.getToken({ 
-                        vapidKey: 'BBTDLPFV6CLvM11VfuZm6SxsVmGhoVi9bBJoPg5vJxfoV2iKDkawoLtI4undilGeSlprzxsr3pmhY0sQEb3Nos4' 
-                    }).then((currentToken) => {
-                        if (currentToken && currentStudent) {
-                            db.collection("students").doc(currentStudent.id).update({
-                                fcmToken: currentToken,
-                                tokenUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                            }).catch(err => console.log("خطأ حفظ Token الطالب:", err));
-                        }
-                    }).catch(err => console.log("خطأ في جلب الـ Token:", err));
-
-                    showCustomDialog("fa-solid fa-circle-check", "تم التفعيل بنجاح", "تم تفعيل الإشعارات الفورية على هذا الهاتف!");
-                    new Notification("منظومة مسار التعليمية", {
-                        body: "تم تفعيل التنبيهات بنجاح لاستقبال الإشعارات.",
-                        icon: "icon-192.png"
-                    });
-                } else {
-                    showCustomDialog("fa-solid fa-circle-xmark", "تم رفض الإذن", "تم رفض إذن الإشعارات من المتصفح.");
-                }
-            });
-        }
-
-        function requestParentNotificationPermission() {
-            if (!('serviceWorker' in navigator) || typeof firebase === 'undefined') {
-                showCustomDialog("fa-solid fa-triangle-exclamation", "غير مدعوم", "المتصفح لا يدعم خدمة الإشعارات أو Firebase غير معرف.");
-                return;
-            }
-
-            const messaging = firebase.messaging();
-
-            Notification.requestPermission().then((permission) => {
-                if (permission === "granted") {
-                    messaging.getToken({ 
-                        vapidKey: 'BBTDLPFV6CLvM11VfuZm6SxsVmGhoVi9bBJoPg5vJxfoV2iKDkawoLtI4undilGeSlprzxsr3pmhY0sQEb3Nos4' 
-                    }).then((currentToken) => {
-                        if (currentToken && currentParent) {
-                            db.collection("parents").doc(currentParent.phone).update({
-                                fcmToken: currentToken,
-                                tokenUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                            }).catch(err => console.log("خطأ حفظ Token ولي الأمر:", err));
-                        }
-                    }).catch(err => console.log("خطأ في جلب الـ Token لولي الأمر:", err));
-
-                    showCustomDialog("fa-solid fa-circle-check", "تم تفعيل إشعارات ولي الأمر", "تم تفعيل التنبيهات الفورية على هذا الهاتف بنجاح!");
-                    new Notification("منظومة مسار التعليمية - متابعة ولي الأمر", {
-                        body: "تم ربط هذا الهاتف بنجاح لاستقبال تنبيهات حضور الطلاب.",
-                        icon: "icon-192.png"
-                    });
-                } else {
-                    showCustomDialog("fa-solid fa-circle-xmark", "تم رفض الإذن", "تم رفض إذن الإشعارات.");
-                }
-            });
-        }
-
-        function showCustomDialog(iconClass, title, message) {
-            document.getElementById('customDialogIcon').innerHTML = `<i class="${iconClass}" style="color: var(--primary);"></i>`;
-            document.getElementById('customDialogTitle').innerText = title;
-            document.getElementById('customDialogMsg').innerText = message;
-            document.getElementById('customDialogBtns').innerHTML = `<button class="btn-submit" style="width: auto; padding: 10px 30px;" onclick="closeCustomDialog()">حسناً</button>`;
-            document.getElementById('customDialog').style.display = 'flex';
-        }
-
-        function closeCustomDialog() {
-            document.getElementById('customDialog').style.display = 'none';
-        }
-    </script>
- <!-- JavaScript Logic & Firebase Integration -->
+    <!-- JavaScript Logic & Firebase Integration -->
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDX2kMWtPt4zZo5eBui-5O_aeMRB7ejfqQ",
@@ -1176,9 +1096,6 @@
             }).catch(err => console.log("Settings fetch error:", err));
 
             switchUserRole('selector');
-            if(document.getElementById('unifiedRoleSelect')) {
-                toggleUnifiedFields();
-            }
         });
 
         function toggleSidebar() {
@@ -1311,6 +1228,9 @@
             document.getElementById('studentLoginId').value = '';
         }
 
+        // ==========================================
+        // 🔔 دوال الإشعارات والـ VAPID المحدثة بالكامل
+        // ==========================================
         function requestBrowserNotificationPermission() {
             if (!('serviceWorker' in navigator) || typeof firebase === 'undefined') {
                 showCustomDialog("fa-solid fa-triangle-exclamation", "غير مدعوم", "المتصفح لا يدعم خدمة الإشعارات أو Firebase غير معرف.");
@@ -1385,86 +1305,6 @@
 
         function closeCustomDialog() {
             document.getElementById('customDialog').style.display = 'none';
-        }
-
-        // ==========================================
-        // 🛡️ دوال التحكم الشاملة واللوحات والإدارة
-        // ==========================================
-
-        function loadAdminDashboardData() {
-            console.log("جاري تحميل بيانات لوحة المشرف...");
-            db.collection("students").get().then(snapshot => {
-                let total = snapshot.size;
-                let active = 0;
-                snapshot.forEach(doc => {
-                    if (doc.data().status === 'مفعل') active++;
-                });
-                if(document.getElementById('statTotal')) document.getElementById('statTotal').innerText = total;
-                if(document.getElementById('statActive')) document.getElementById('statActive').innerText = active;
-            }).catch(err => console.log("خطأ تحميل بيانات المشرف:", err));
-        }
-
-        function authenticateAdmin() {
-            const email = document.getElementById('adminEmailInput').value.trim();
-            const pass = document.getElementById('adminPass').value.trim();
-            if (!email || !pass) {
-                showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال البريد الإلكتروني وكلمة المرور.");
-                return;
-            }
-            auth.signInWithEmailAndPassword(email, pass)
-                .then(() => {
-                    currentRole = 'admin';
-                    document.getElementById('adminAuthCard').style.display = 'none';
-                    document.getElementById('adminContent').style.display = 'block';
-                    loadAdminDashboardData();
-                })
-                .catch(err => showCustomDialog("fa-solid fa-circle-xmark", "خطأ دخول", err.message));
-        }
-
-        function toggleUnifiedFields() {
-            const role = document.getElementById('unifiedRoleSelect').value;
-            const container = document.getElementById('unifiedInputFields');
-            if (role === 'student') {
-                container.innerHTML = `<div class="form-group"><input type="text" id="uniStudentId" class="input-box" placeholder="أدخل كود الطالب" style="text-align:center;"></div>`;
-            } else if (role === 'parent') {
-                container.innerHTML = `<div class="form-group"><input type="tel" id="uniParentPhone" class="input-box" placeholder="رقم هاتف ولي الأمر" style="text-align:center;"></div>`;
-            } else if (role === 'driver') {
-                container.innerHTML = `<div class="form-group"><input type="text" id="uniDriverBus" class="input-box" placeholder="رقم القاعة / المجموعة" style="text-align:center;"></div>`;
-            } else if (role === 'admin') {
-                container.innerHTML = `<div class="form-group"><input type="email" id="uniAdminEmail" class="input-box" placeholder="بريد المشرف" style="text-align:center;"></div>`;
-            }
-        }
-
-        function executeUnifiedLogin() {
-            const role = document.getElementById('unifiedRoleSelect').value;
-            if (role === 'student') {
-                const sId = document.getElementById('uniStudentId')?.value.trim();
-                if (sId) {
-                    document.getElementById('studentLoginId').value = sId;
-                    switchUserRole('student');
-                    loginStudentPortal();
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال كود الطالب.");
-                }
-            } else if (role === 'parent') {
-                const pPhone = document.getElementById('uniParentPhone')?.value.trim();
-                if (pPhone) {
-                    document.getElementById('parentPhoneInput').value = pPhone;
-                    switchUserRole('parent');
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال رقم الهاتف.");
-                }
-            } else if (role === 'driver') {
-                const dBus = document.getElementById('uniDriverBus')?.value.trim();
-                if (dBus) {
-                    document.getElementById('busNumberInputScan').value = dBus;
-                    switchUserRole('driver');
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال رقم القاعة.");
-                }
-            } else if (role === 'admin') {
-                switchUserRole('admin');
-            }
         }
     </script>
 </body>
