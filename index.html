@@ -2146,8 +2146,14 @@
                 });
         }
 
-        function authenticateAdmin() {
-    const adminPass = document.getElementById('adminPassInput').value.trim();
+       function authenticateAdmin() {
+    const passInput = document.getElementById('adminPassInput') || document.getElementById('adminPass');
+    if (!passInput) {
+        showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "حقل كلمة المرور غير متطابق في الصفحة.");
+        return;
+    }
+
+    const adminPass = passInput.value.trim();
     if (!adminPass) {
         showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "أدخل كلمة مرور الأدمن.");
         return;
@@ -2164,8 +2170,16 @@
         .then(data => {
             if (data.success) {
                 // فتح لوحة التحكم الرئيسية للأدمن
-                document.getElementById('adminAuthCard').style.display = 'none';
-                document.getElementById('adminDashboardContent').style.display = 'block';
+                const authCard = document.getElementById('adminAuthCard');
+                const dashboardContent = document.getElementById('adminDashboardContent') || document.getElementById('adminContent');
+                
+                if (authCard) authCard.style.display = 'none';
+                if (dashboardContent) dashboardContent.style.display = 'block';
+                
+                // استدعاء دالة تحميل بيانات لوحة التحكم إن وجدت
+                if (typeof loadAdminDashboardData === 'function') {
+                    loadAdminDashboardData();
+                }
             } else {
                 showCustomDialog("fa-solid fa-circle-xmark", "خطأ", data.message || "كلمة السر غير صحيحة.");
             }
@@ -2176,7 +2190,6 @@
         });
     });
 }
-
         function loadAdminDashboardData() {
             loadFinancialReports();
             loadBusesSummary();
