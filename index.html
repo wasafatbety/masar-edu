@@ -1307,5 +1307,85 @@
             document.getElementById('customDialog').style.display = 'none';
         }
     </script>
+  // ==========================================
+        // 🛡️ دوال التحكم الشاملة واللوحات والإدارة
+        // ==========================================
+
+        function loadAdminDashboardData() {
+            console.log("جاري تحميل بيانات لوحة المشرف...");
+            db.collection("students").get().then(snapshot => {
+                let total = snapshot.size;
+                let active = 0;
+                snapshot.forEach(doc => {
+                    if (doc.data().status === 'مفعل') active++;
+                });
+                if(document.getElementById('statTotal')) document.getElementById('statTotal').innerText = total;
+                if(document.getElementById('statActive')) document.getElementById('statActive').innerText = active;
+            }).catch(err => console.log("خطأ تحميل بيانات المشرف:", err));
+        }
+
+        function authenticateAdmin() {
+            const email = document.getElementById('adminEmailInput').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
+            if (!email || !pass) {
+                showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال البريد الإلكتروني وكلمة المرور.");
+                return;
+            }
+            auth.signInWithEmailAndPassword(email, pass)
+                .then(() => {
+                    currentRole = 'admin';
+                    document.getElementById('adminAuthCard').style.display = 'none';
+                    document.getElementById('adminContent').style.display = 'block';
+                    loadAdminDashboardData();
+                })
+                .catch(err => showCustomDialog("fa-solid fa-circle-xmark", "خطأ دخول", err.message));
+        }
+
+        function toggleUnifiedFields() {
+            const role = document.getElementById('unifiedRoleSelect').value;
+            const container = document.getElementById('unifiedInputFields');
+            if (role === 'student') {
+                container.innerHTML = `<div class="form-group"><input type="text" id="uniStudentId" class="input-box" placeholder="أدخل كود الطالب" style="text-align:center;"></div>`;
+            } else if (role === 'parent') {
+                container.innerHTML = `<div class="form-group"><input type="tel" id="uniParentPhone" class="input-box" placeholder="رقم هاتف ولي الأمر" style="text-align:center;"></div>`;
+            } else if (role === 'driver') {
+                container.innerHTML = `<div class="form-group"><input type="text" id="uniDriverBus" class="input-box" placeholder="رقم القاعة / المجموعة" style="text-align:center;"></div>`;
+            } else if (role === 'admin') {
+                container.innerHTML = `<div class="form-group"><input type="email" id="uniAdminEmail" class="input-box" placeholder="بريد المشرف" style="text-align:center;"></div>`;
+            }
+        }
+
+        function executeUnifiedLogin() {
+            const role = document.getElementById('unifiedRoleSelect').value;
+            if (role === 'student') {
+                const sId = document.getElementById('uniStudentId')?.value.trim();
+                if (sId) {
+                    document.getElementById('studentLoginId').value = sId;
+                    switchUserRole('student');
+                    loginStudentPortal();
+                } else {
+                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال كود الطالب.");
+                }
+            } else if (role === 'parent') {
+                const pPhone = document.getElementById('uniParentPhone')?.value.trim();
+                if (pPhone) {
+                    document.getElementById('parentPhoneInput').value = pPhone;
+                    switchUserRole('parent');
+                } else {
+                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال رقم الهاتف.");
+                }
+            } else if (role === 'driver') {
+                const dBus = document.getElementById('uniDriverBus')?.value.trim();
+                if (dBus) {
+                    document.getElementById('busNumberInputScan').value = dBus;
+                    switchUserRole('driver');
+                } else {
+                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال رقم القاعة.");
+                }
+            } else if (role === 'admin') {
+                switchUserRole('admin');
+            }
+        }
+  </script>
 </body>
 </html>
