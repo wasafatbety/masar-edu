@@ -8,29 +8,29 @@
     }
   </script>
 
+  <!-- 2. وسم الـ CSP للأمان وحماية الموارد والسكريبتات (تم تحديثه لتدعم EmailJS) -->
   <meta http-equiv="Content-Security-Policy" content="
-  default-src 'self' data: blob:;
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' 
+    default-src 'self' data: blob:;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' 
+               https://cdnjs.cloudflare.com 
+               https://unpkg.com 
+               https://www.gstatic.com
+               https://cdn.jsdelivr.net;
+    style-src 'self' 'unsafe-inline' 
+              https://cdnjs.cloudflare.com 
+              https://fonts.googleapis.com;
+    font-src 'self' 
              https://cdnjs.cloudflare.com 
-             https://unpkg.com 
-             https://www.gstatic.com
-             https://cdn.jsdelivr.net;
-  style-src 'self' 'unsafe-inline' 
-            https://cdnjs.cloudflare.com 
-            https://fonts.googleapis.com;
-  font-src 'self' 
-           https://cdnjs.cloudflare.com 
-           https://fonts.gstatic.com;
-  connect-src 'self' 
-              https://*.firebaseio.com 
-              https://*.googleapis.com 
-              https://firestore.googleapis.com 
-              https://identitytoolkit.googleapis.com
-              https://securetoken.googleapis.com
-              https://*.firebase.com
-              https://api.emailjs.com;
-  img-src 'self' data: blob: https:;
-">
+             https://fonts.gstatic.com;
+    connect-src 'self' 
+                https://*.firebaseio.com 
+                https://*.googleapis.com 
+                https://firestore.googleapis.com 
+                https://identitytoolkit.googleapis.com
+                https://api.emailjs.com;
+    img-src 'self' data: blob: https:;
+  ">
+
   <!-- 3. مكتبة EmailJS وتهيئة المفتاح العام الخاص بك -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
@@ -535,56 +535,32 @@
             </div>
         </div>
 
-        function toggleUnifiedFields() {
-            const role = document.getElementById('unifiedRoleSelect').value;
-            const container = document.getElementById('unifiedInputFields');
-            if (!container) return;
-            
-            if (role === 'student') {
-                container.innerHTML = `<div class="form-group"><input type="text" id="uniStudentId" class="input-box" placeholder="أدخل كود الطالب" style="text-align:center;"></div>`;
-            } else if (role === 'parent') {
-                container.innerHTML = `<div class="form-group"><input type="tel" id="uniParentPhone" class="input-box" placeholder="رقم هاتف ولي الأمر" style="text-align:center;"></div>`;
-            } else if (role === 'driver') {
-                container.innerHTML = `<div class="form-group"><input type="text" id="uniDriverBus" class="input-box" placeholder="رقم القاعة / المجموعة" style="text-align:center;"></div>`;
-            } else if (role === 'admin') {
-                container.innerHTML = `<div class="form-group"><input type="email" id="uniAdminEmail" class="input-box" placeholder="بريد المشرف" style="text-align:center;"></div>`;
-            }
-        }
+        <!-- VIEW: UNIFIED LOGIN FOR ALL ROLES -->
+        <div id="unifiedTab" class="view">
+            <div class="glass-card" style="text-align: center;">
+                <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;"></i>
+                <h3 style="margin-bottom: 15px;">تسجيل الدخول الموحد</h3>
 
-        function executeUnifiedLogin() {
-            const role = document.getElementById('unifiedRoleSelect').value;
-            if (role === 'student') {
-                const sId = document.getElementById('uniStudentId')?.value.trim();
-                if (sId) {
-                    const studentInput = document.getElementById('studentLoginId');
-                    if (studentInput) studentInput.value = sId;
-                    switchUserRole('student');
-                    if (typeof loginStudentPortal === 'function') loginStudentPortal();
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال كود الطالب.");
-                }
-            } else if (role === 'parent') {
-                const pPhone = document.getElementById('uniParentPhone')?.value.trim();
-                if (pPhone) {
-                    const parentInput = document.getElementById('parentPhoneInput');
-                    if (parentInput) parentInput.value = pPhone;
-                    switchUserRole('parent');
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال رقم الهاتف.");
-                }
-            } else if (role === 'driver') {
-                const dBus = document.getElementById('uniDriverBus')?.value.trim();
-                if (dBus) {
-                    const busInput = document.getElementById('busNumberInputScan');
-                    if (busInput) busInput.value = dBus;
-                    switchUserRole('driver');
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال رقم القاعة.");
-                }
-            } else if (role === 'admin') {
-                switchUserRole('admin');
-            }
-        }        <!-- VIEW 0: STUDENT DYNAMIC QR CARD -->
+                <div class="form-group">
+                    <label>حدد الصفة / نوع الحساب:</label>
+                    <select id="unifiedRoleSelect" class="input-box" style="background: #1e1b4b;" onchange="toggleUnifiedFields()">
+                        <option value="student">طالب 🎓</option>
+                        <option value="parent">ولي أمر 👨‍👩‍👦</option>
+                        <option value="driver">معلم / مشرف 🏫</option>
+                        <option value="admin">إدارة ومالية 🛡️</option>
+                    </select>
+                </div>
+
+                <div id="unifiedInputFields"></div>
+
+                <button class="btn-submit" style="margin-top:15px;" onclick="executeUnifiedLogin()">
+                    <i class="fa-solid fa-right-to-bracket"></i> دخول المنظومة
+                </button>
+                <button class="btn-submit" style="background: rgba(255,255,255,0.08); margin-top: 10px;" onclick="switchUserRole('selector')">العودة للشاشة الرئيسية</button>
+            </div>
+        </div>
+
+        <!-- VIEW 0: STUDENT DYNAMIC QR CARD -->
         <div id="studentTab" class="view">
             <div id="studentAuthCard" class="glass-card" style="text-align: center;">
                 <i class="fa-solid fa-mobile-screen-button" style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;"></i>
