@@ -2147,22 +2147,35 @@
         }
 
         function authenticateAdmin() {
-            const email = document.getElementById('adminEmailInput').value.trim();
-            const pass = document.getElementById('adminPass').value.trim();
+    const adminPass = document.getElementById('adminPassInput').value.trim();
+    if (!adminPass) {
+        showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "أدخل كلمة مرور الأدمن.");
+        return;
+    }
 
-            if (!email || !pass) {
-                showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "أدخل البريد وكلمة المرور.");
-                return;
-            }
-
-            auth.signInWithEmailAndPassword(email, pass).then(userCredential => {
+    // فحص reCAPTCHA v3 والتحقق عبر الباك‌اند السحابي
+    verifyEduRecaptcha('admin_login', function(token) {
+        fetch("https://us-central1-masar-edu-control-system.cloudfunctions.net/adminLogin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password: adminPass, recaptchaToken: token })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // فتح لوحة التحكم الرئيسية للأدمن
                 document.getElementById('adminAuthCard').style.display = 'none';
-                document.getElementById('adminContent').style.display = 'block';
-                loadAdminDashboardData();
-            }).catch(error => {
-                showCustomDialog("fa-solid fa-circle-xmark", "فشل الدخول", "بيانات الاعتماد غير صحيحة: " + error.message);
-            });
-        }
+                document.getElementById('adminDashboardContent').style.display = 'block';
+            } else {
+                showCustomDialog("fa-solid fa-circle-xmark", "خطأ", data.message || "كلمة السر غير صحيحة.");
+            }
+        })
+        .catch(err => {
+            console.error("Admin Login Error:", err);
+            showCustomDialog("fa-solid fa-triangle-exclamation", "خطأ اتصال", "تعذر الاتصال بالباك‌اند المركزي.");
+        });
+    });
+}
 
         function loadAdminDashboardData() {
             loadFinancialReports();
