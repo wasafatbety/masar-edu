@@ -1973,20 +1973,21 @@
             if (studentId) processStudentAttendance(studentId);
         }
 
-      function processStudentAttendance(studentId) {
+    function processStudentAttendance(studentId) {
     const direction = document.getElementById('tripDirectionSelect').value;
     const now = new Date();
     const dateStr = now.toISOString().split('T')[0];
     const timeStr = now.toLocaleTimeString('ar-EG');
 
-    verifyEduRecaptcha('submit_attendance', function() {
+    verifyEduRecaptcha('submit_attendance', function(recaptchaToken) { // استلمنا التوكن هنا
         const payload = {
             studentId: studentId,
             busNum: currentDriverBus,
             direction: direction,
             semester: activeSemester,
             date: dateStr,
-            time: timeStr
+            time: timeStr,
+            recaptchaToken: recaptchaToken // أضفنا التوكن للطلب
         };
 
         fetch("https://us-central1-masar-edu-control-system.cloudfunctions.net/recordAttendance", {
@@ -2019,8 +2020,7 @@
             showCustomDialog("fa-solid fa-triangle-exclamation", "خطأ اتصال", "تعذر الاتصال بالباك‌اند المركزي.");
         });
     });
-}
-        function authenticateDriverLogs() {
+}        function authenticateDriverLogs() {
             const busNum = document.getElementById('busNumberInputLogs').value.trim();
             const pass = document.getElementById('driverPassLogs').value.trim();
 
@@ -2976,23 +2976,21 @@ ${downloadUrl}
     }
 </script>
 <script>
-    // دالة التحقق من الـ reCAPTCHA لمنظومة Masar Edu
-    function verifyEduRecaptcha(actionName, callback) {
-        if (typeof grecaptcha === 'undefined') {
-            callback();
-            return;
-        }
-
-        grecaptcha.ready(function() {
-            grecaptcha.execute('6LesVwsuAAAAAHXabXsIFuBSbLpZl1JZA3WMFUgr', {action: actionName}).then(function(token) {
-                console.log('Edu reCAPTCHA Token generated for ' + actionName);
-                callback();
-            }).catch(err => {
-                console.error('reCAPTCHA error:', err);
-                callback();
-            });
-        });
+   function verifyEduRecaptcha(actionName, callback) {
+    if (typeof grecaptcha === 'undefined') {
+        callback(null);
+        return;
     }
-</script>
+
+    grecaptcha.ready(function() {
+        grecaptcha.execute('6LesVwsuAAAAAHXabXsIFuBSbLpZl1JZA3WMFUgr', {action: actionName}).then(function(token) {
+            console.log('Edu reCAPTCHA Token generated for ' + actionName);
+            callback(token); // مررنا التوكن هنا
+        }).catch(err => {
+            console.error('reCAPTCHA error:', err);
+            callback(null);
+        });
+    });
+}</script>
 </body>
 </html>
