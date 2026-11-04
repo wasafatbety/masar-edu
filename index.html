@@ -8,9 +8,9 @@
     }
   </script>
 
-  <!-- 2. وسم الـ CSP للأمان وحماية الموارد والسكريبتات (تم تحديثه لتدعم EmailJS) -->
+  <!-- 2. وسم الـ CSP للأمان المحدث والمصلح بالكامل لدعم اتصالات Firebase & EmailJS بدون حظر -->
   <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self' data: blob:;
+    default-src 'self' data: blob: https:;
     script-src 'self' 'unsafe-inline' 'unsafe-eval' 
                https://cdnjs.cloudflare.com 
                https://unpkg.com 
@@ -24,9 +24,11 @@
              https://fonts.gstatic.com;
     connect-src 'self' 
                 https://*.firebaseio.com 
+                wss://*.firebaseio.com 
                 https://*.googleapis.com 
                 https://firestore.googleapis.com 
-                https://identitytoolkit.googleapis.com
+                https://identitytoolkit.googleapis.com 
+                https://fcmregistrations.googleapis.com 
                 https://api.emailjs.com;
     img-src 'self' data: blob: https:;
   ">
@@ -675,7 +677,6 @@
                 </div>
             </div>
         </div>
-
         <!-- SEARCH PAGE -->
         <div id="searchTab" class="view">
             <div class="glass-card" style="border-color: var(--primary);">
@@ -1064,8 +1065,6 @@
         }
         const db = firebase.firestore();
         const auth = firebase.auth();
-        // تهيئة دالة الاستدعاء المباشر للباك إيند
-        const functions = firebase.app().functions('us-central1'); // أو المنطقة المحددة لمشروعك مثل europe-west1
 
         let currentRole = 'selector';
         let activeSemester = 'الترم الأول';
@@ -1092,37 +1091,30 @@
             db.collection("settings").doc("academic").get().then(doc => {
                 if (doc.exists && doc.data().activeSemester) {
                     activeSemester = doc.data().activeSemester;
-                    if (document.getElementById('quickDriverSemesterSelect')) document.getElementById('quickDriverSemesterSelect').value = activeSemester;
-                    if (document.getElementById('activeSemesterSelect')) document.getElementById('activeSemesterSelect').value = activeSemester;
+                    document.getElementById('quickDriverSemesterSelect').value = activeSemester;
+                    document.getElementById('activeSemesterSelect').value = activeSemester;
                 }
             }).catch(err => console.log("Settings fetch error:", err));
 
             switchUserRole('selector');
-            if (document.getElementById('unifiedRoleSelect')) {
-                toggleUnifiedFields();
-            }
         });
 
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (sidebar) sidebar.classList.toggle('active');
-            if (overlay) overlay.classList.toggle('active');
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
         }
 
         function navigateTo(viewId, titleStr) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             const targetView = document.getElementById(viewId);
             if (targetView) targetView.classList.add('active');
-            if (document.getElementById('currentPageTitle')) {
-                document.getElementById('currentPageTitle').innerText = titleStr || 'المنظومة التعليمية';
-            }
+            document.getElementById('currentPageTitle').innerText = titleStr || 'المنظومة التعليمية';
             
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
-            if (sidebar && sidebar.classList.contains('active')) {
+            if (sidebar.classList.contains('active')) {
                 sidebar.classList.remove('active');
-                if (overlay) overlay.classList.remove('active');
+                overlay.classList.remove('active');
             }
 
             if (viewId === 'adminTab' && currentRole === 'admin') {
@@ -1137,52 +1129,50 @@
             const roleTitle = document.getElementById('roleSectionTitle');
 
             if (role === 'selector') {
-                if (toggleBtn) toggleBtn.style.display = 'none';
+                toggleBtn.style.display = 'none';
                 navigateTo('portalSelectorTab', 'اختيار الواجهة');
                 return;
             }
 
-            if (toggleBtn) toggleBtn.style.display = 'flex';
+            toggleBtn.style.display = 'flex';
             let navHtml = '';
 
             if (role === 'student') {
-                if (roleTitle) roleTitle.innerText = 'خدمات الطالب';
+                roleTitle.innerText = 'خدمات الطالب';
                 navHtml = `<button class="nav-item active" onclick="navigateTo('studentTab', 'بوابة الطالب الذكية')"><i class="fa-solid fa-id-card"></i> كارت الباركود والقرارات</button>`;
                 navigateTo('studentTab', 'بوابة الطالب الذكية');
             } else if (role === 'parent') {
-                if (roleTitle) roleTitle.innerText = 'خدمات ولي الأمر';
+                roleTitle.innerText = 'خدمات ولي الأمر';
                 navHtml = `<button class="nav-item active" onclick="navigateTo('parentTab', 'متابعة ولي الأمر')"><i class="fa-solid fa-users-viewfinder"></i> المتابعة اللحظية والأقساط</button>`;
                 navigateTo('parentTab', 'متابعة ولي الأمر');
             } else if (role === 'driver') {
-                if (roleTitle) roleTitle.innerText = 'خدمات المعلم والأنشطة';
+                roleTitle.innerText = 'خدمات المعلم والأنشطة';
                 navHtml = `
                     <button class="nav-item active" onclick="navigateTo('scanTab', 'ماسح حضور القاعة')"><i class="fa-solid fa-camera"></i> ماسح الحضور الذكي</button>
                     <button class="nav-item" onclick="navigateTo('logsTab', 'تقرير حضور المجموعة')"><i class="fa-solid fa-list-check"></i> تقرير الحضور اليومي</button>
                 `;
                 navigateTo('scanTab', 'ماسح حضور القاعة');
             } else if (role === 'admin') {
-                if (roleTitle) roleTitle.innerText = 'لوحة الإشراف والمالية';
+                roleTitle.innerText = 'لوحة الإشراف والمالية';
                 navHtml = `<button class="nav-item active" onclick="navigateTo('adminTab', 'لوحة المشرف والإدارة المالية')"><i class="fa-solid fa-user-shield"></i> لوحة التحكم والمالية</button>`;
                 navigateTo('adminTab', 'لوحة المشرف والإدارة المالية');
             } else if (role === 'unified') {
-                if (roleTitle) roleTitle.innerText = 'الدخول الموحد';
+                roleTitle.innerText = 'الدخول الموحد';
                 navHtml = `<button class="nav-item active" onclick="navigateTo('unifiedTab', 'تسجيل الدخول الموحد')"><i class="fa-solid fa-right-to-bracket"></i> بوابة الدخول الموحدة</button>`;
                 navigateTo('unifiedTab', 'تسجيل الدخول الموحد');
             }
 
-            if (navContainer) navContainer.innerHTML = navHtml;
+            navContainer.innerHTML = navHtml;
         }
 
         function toggleCollapsible(headerElem) {
-            if (headerElem && headerElem.parentElement) {
-                headerElem.parentElement.classList.toggle('active');
-            }
+            headerElem.parentElement.classList.toggle('active');
         }
 
         function updateSemesterSetting(newVal) {
             activeSemester = newVal;
-            if (document.getElementById('quickDriverSemesterSelect')) document.getElementById('quickDriverSemesterSelect').value = newVal;
-            if (document.getElementById('activeSemesterSelect')) document.getElementById('activeSemesterSelect').value = newVal;
+            document.getElementById('quickDriverSemesterSelect').value = newVal;
+            document.getElementById('activeSemesterSelect').value = newVal;
 
             db.collection("settings").doc("academic").set({
                 activeSemester: newVal,
@@ -1194,10 +1184,7 @@
         }
 
         function loginStudentPortal() {
-            const studentIdInput = document.getElementById('studentLoginId');
-            if (!studentIdInput) return;
-            const studentId = studentIdInput.value.trim();
-
+            const studentId = document.getElementById('studentLoginId').value.trim();
             if (!studentId) {
                 showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى كتابة كود الطالب بشكل صحيح.");
                 return;
@@ -1212,137 +1199,34 @@
                 const data = doc.data();
                 currentStudent = { id: doc.id, ...data };
                 renderStudentCardUI(data);
-            }).catch(err => showCustomDialog("fa-solid fa-circle-xmark", "خطأ اتصالات", err.message));
+            });
         }
 
         function renderStudentCardUI(data) {
-            if (document.getElementById('studentAuthCard')) document.getElementById('studentAuthCard').style.display = 'none';
-            if (document.getElementById('studentPortalContent')) document.getElementById('studentPortalContent').style.display = 'block';
+            document.getElementById('studentAuthCard').style.display = 'none';
+            document.getElementById('studentPortalContent').style.display = 'block';
 
-            if (document.getElementById('studentCardName')) document.getElementById('studentCardName').innerText = data.name || 'طالب مسار';
-            if (document.getElementById('studentCardId')) document.getElementById('studentCardId').innerText = `كود الطالب: ${data.id}`;
-            if (document.getElementById('studentAcademicBadge')) document.getElementById('studentAcademicBadge').innerText = `${data.stage || ''} - ${data.grade || ''}`;
+            document.getElementById('studentCardName').innerText = data.name || 'طالب مسار';
+            document.getElementById('studentCardId').innerText = `كود الطالب: ${data.id}`;
+            document.getElementById('studentAcademicBadge').innerText = `${data.stage || ''} - ${data.grade || ''}`;
 
             const statusElem = document.getElementById('studentCardStatus');
-            if (statusElem) {
-                statusElem.innerText = data.status === 'مفعل' ? 'الحساب مفعل 🟢' : 'موقف 🔴';
-            }
+            statusElem.innerText = data.status === 'مفعل' ? 'الحساب مفعل 🟢' : 'موقف 🔴';
 
             const qrCanvas = document.getElementById('qrcodeCanvas');
-            if (qrCanvas) {
-                qrCanvas.innerHTML = '';
-                new QRCode(qrCanvas, {
-                    text: JSON.stringify({ id: data.id, name: data.name, status: data.status }),
-                    width: 180,
-                    height: 180
-                });
-            }
+            qrCanvas.innerHTML = '';
+            new QRCode(qrCanvas, {
+                text: JSON.stringify({ id: data.id, name: data.name, status: data.status }),
+                width: 180,
+                height: 180
+            });
         }
 
         function logoutStudentPortal() {
             currentStudent = null;
-            if (document.getElementById('studentPortalContent')) document.getElementById('studentPortalContent').style.display = 'none';
-            if (document.getElementById('studentAuthCard')) document.getElementById('studentAuthCard').style.display = 'block';
-            if (document.getElementById('studentLoginId')) document.getElementById('studentLoginId').value = '';
-        }
-
-        // ==========================================
-        // 🛠️ الدوال المضافة لتشغيل الأزرار والدخول الموحد والباك إيند
-        // ==========================================
-        function toggleUnifiedFields() {
-            const roleSelect = document.getElementById('unifiedRoleSelect');
-            const container = document.getElementById('unifiedInputFields');
-            if (!roleSelect || !container) return;
-            const role = roleSelect.value;
-            
-            if (role === 'student') {
-                container.innerHTML = `<div class="form-group"><input type="text" id="uniStudentId" class="input-box" placeholder="أدخل كود الطالب" style="text-align:center;"></div>`;
-            } else if (role === 'parent') {
-                container.innerHTML = `<div class="form-group"><input type="tel" id="uniParentPhone" class="input-box" placeholder="رقم هاتف ولي الأمر" style="text-align:center;"></div>`;
-            } else if (role === 'driver') {
-                container.innerHTML = `<div class="form-group"><input type="text" id="uniDriverBus" class="input-box" placeholder="رقم القاعة / المجموعة" style="text-align:center;"></div>`;
-            } else if (role === 'admin') {
-                container.innerHTML = `<div class="form-group"><input type="email" id="uniAdminEmail" class="input-box" placeholder="بريد المشرف" style="text-align:center;"></div>`;
-            }
-        }
-
-        function executeUnifiedLogin() {
-            const roleSelect = document.getElementById('unifiedRoleSelect');
-            if (!roleSelect) return;
-            const role = roleSelect.value;
-
-            if (role === 'student') {
-                const sId = document.getElementById('uniStudentId')?.value.trim();
-                if (sId) {
-                    if (document.getElementById('studentLoginId')) document.getElementById('studentLoginId').value = sId;
-                    switchUserRole('student');
-                    loginStudentPortal();
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال كود الطالب.");
-                }
-            } else if (role === 'parent') {
-                const pPhone = document.getElementById('uniParentPhone')?.value.trim();
-                if (pPhone) {
-                    if (document.getElementById('parentPhoneInput')) document.getElementById('parentPhoneInput').value = pPhone;
-                    switchUserRole('parent');
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال رقم الهاتف.");
-                }
-            } else if (role === 'driver') {
-                const dBus = document.getElementById('uniDriverBus')?.value.trim();
-                if (dBus) {
-                    if (document.getElementById('busNumberInputScan')) document.getElementById('busNumberInputScan').value = dBus;
-                    switchUserRole('driver');
-                } else {
-                    showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال رقم القاعة.");
-                }
-            } else if (role === 'admin') {
-                switchUserRole('admin');
-            }
-        }
-
-        function authenticateAdmin() {
-            const email = document.getElementById('adminEmailInput')?.value.trim();
-            const pass = document.getElementById('adminPass')?.value.trim();
-            if (!email || !pass) {
-                showCustomDialog("fa-solid fa-triangle-exclamation", "تنبيه", "يرجى إدخال البريد الإلكتروني وكلمة المرور.");
-                return;
-            }
-            auth.signInWithEmailAndPassword(email, pass)
-                .then(() => {
-                    currentRole = 'admin';
-                    if (document.getElementById('adminAuthCard')) document.getElementById('adminAuthCard').style.display = 'none';
-                    if (document.getElementById('adminContent')) document.getElementById('adminContent').style.display = 'block';
-                    loadAdminDashboardData();
-                })
-                .catch(err => showCustomDialog("fa-solid fa-circle-xmark", "خطأ دخول", err.message));
-        }
-
-        function loadAdminDashboardData() {
-            db.collection("students").get().then(snapshot => {
-                let total = snapshot.size;
-                let active = 0;
-                snapshot.forEach(doc => {
-                    if (doc.data().status === 'مفعل') active++;
-                });
-                if (document.getElementById('statTotal')) document.getElementById('statTotal').innerText = total;
-                if (document.getElementById('statActive')) document.getElementById('statActive').innerText = active;
-            }).catch(err => console.log("خطأ تحميل البيانات:", err));
-        }
-
-        function triggerMyBackendAction(functionName, payloadData) {
-            const callBackend = functions.httpsCallable(functionName || 'myBackendFunctionName');
-            return callBackend(payloadData || {})
-                .then((result) => {
-                    console.log("استجابة الباك إيند:", result.data);
-                    showCustomDialog("fa-solid fa-circle-check", "تم بنجاح", "تم تنفيذ العملية عبر الباك إيند بنجاح.");
-                    return result.data;
-                })
-                .catch((error) => {
-                    console.error("خطأ الباك إيند:", error);
-                    showCustomDialog("fa-solid fa-circle-xmark", "خطأ", error.message);
-                    throw error;
-                });
+            document.getElementById('studentPortalContent').style.display = 'none';
+            document.getElementById('studentAuthCard').style.display = 'block';
+            document.getElementById('studentLoginId').value = '';
         }
 
         // ==========================================
@@ -1413,17 +1297,17 @@
         }
 
         function showCustomDialog(iconClass, title, message) {
-            if (document.getElementById('customDialogIcon')) document.getElementById('customDialogIcon').innerHTML = `<i class="${iconClass}" style="color: var(--primary);"></i>`;
-            if (document.getElementById('customDialogTitle')) document.getElementById('customDialogTitle').innerText = title;
-            if (document.getElementById('customDialogMsg')) document.getElementById('customDialogMsg').innerText = message;
-            if (document.getElementById('customDialogBtns')) document.getElementById('customDialogBtns').innerHTML = `<button class="btn-submit" style="width: auto; padding: 10px 30px;" onclick="closeCustomDialog()">حسناً</button>`;
-            if (document.getElementById('customDialog')) document.getElementById('customDialog').style.display = 'flex';
+            document.getElementById('customDialogIcon').innerHTML = `<i class="${iconClass}" style="color: var(--primary);"></i>`;
+            document.getElementById('customDialogTitle').innerText = title;
+            document.getElementById('customDialogMsg').innerText = message;
+            document.getElementById('customDialogBtns').innerHTML = `<button class="btn-submit" style="width: auto; padding: 10px 30px;" onclick="closeCustomDialog()">حسناً</button>`;
+            document.getElementById('customDialog').style.display = 'flex';
         }
 
         function closeCustomDialog() {
-            if (document.getElementById('customDialog')) document.getElementById('customDialog').style.display = 'none';
+            document.getElementById('customDialog').style.display = 'none';
         }
     </script>
-  <script src="masar-edu-central-backend.js"></script>
 </body>
 </html>
+                                                                               
